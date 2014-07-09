@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv>
+  <sortlines>
+    <sum order="descending" type="integer">
+      <column name="Televote"/>
+      <column name="Juryvote"/>
+    </sum>
+    <column name="Country" order="ascending" type="string"/>
+  </sortlines>
+</csv>

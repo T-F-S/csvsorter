@@ -1,0 +1,885 @@
+% \LaTeX-Main\
+%% The csvsorter program - version 0.92-beta (2014/07/09)
+%% csvsorter.tex: Manual
+%%
+%% Copyright (c) 2014, Prof. Dr. Dr. Thomas F. Sturm
+%% All rights reserved.
+%%
+%% Redistribution and  use in source  and binary forms, with or without
+%% modification, are  permitted provided  that the  following conditions
+%% are met:
+%%
+%% 1. Redistributions  of source  code must  retain the  above copyright
+%% notice, this list of conditions and the following disclaimer.
+%%
+%% 2. Redistributions in binary form  must reproduce the above copyright
+%% notice, this list  of conditions and the following  disclaimer in the
+%% documentation and/or other materials provided with the distribution.
+%%
+%% 3. Neither  the name  of the  project's author nor  the names  of its
+%% contributors may be used to  endorse or promote products derived from
+%% this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+%% "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+%% LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+%% FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+%% COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+%% INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+%% BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+%% LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+%% CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+%% LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+%% WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
+%% POSSIBILITY OF SUCH DAMAGE.
+\documentclass[a4paper,11pt]{ltxdoc}
+
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lmodern,parskip,array,ifthen,calc}
+\usepackage{amsmath,amssymb}
+\usepackage[svgnames,table,hyperref]{xcolor}
+\usepackage{tikz}
+\usepackage{varioref}
+\usepackage[pdftex,bookmarks,raiselinks,pageanchor,hyperindex,colorlinks]{hyperref}
+\usepackage{varwidth,cleveref,incgraph}
+
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=1.5cm,bottom=1.5cm,
+    marginparsep=5mm,marginparwidth=10mm,
+    headheight=0mm,headsep=0cm,
+    footskip=1.5cm,includeheadfoot]{geometry}
+\usepackage{fancyhdr}
+\fancyhf{}
+\fancyfoot[C]{\thepage}%
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\pagestyle{fancy}
+\tolerance=2000%
+\setlength{\emergencystretch}{20pt}%
+
+\usepackage{array,tabularx}
+\usepackage{amsmath}
+\usepackage{lipsum}
+
+\usepackage[cache]{minted}% minted 2.0
+
+\usepackage{changepage}
+\strictpagecheck
+
+\usepackage[many,listings,minted]{tcolorbox}
+\usetikzlibrary{arrows.meta}
+
+\def\version{0.92-beta}%
+\def\datum{2014/07/09}%
+\def\docdatum{\datum}
+
+\hypersetup{
+  pdftitle={Manual for the csvsorter program},
+  pdfauthor={Thomas F. Sturm},
+}
+
+\tcbset{mysource/.style={
+  enhanced,colback=yellow!10!white,colframe=red!50!black,
+  coltitle=red!30!black,colbacktitle=red!50!yellow!20!white,
+  fonttitle=\bfseries\sffamily,arc=1pt,
+  drop lifted shadow=black!50!yellow,boxrule=0.6pt,
+  attach boxed title to top center={yshift*=-\tcboxedtitleheight/2-0.3pt},
+  varwidth boxed title*=-2cm,before title=\strut,
+  boxed title style={enhanced,boxrule=0.6pt,
+    frame code={ \path[tcb fill frame] ([xshift=-4mm]frame.west) -- (frame.north west)
+    -- (frame.north east) -- ([xshift=4mm]frame.east)
+    -- (frame.south east) -- (frame.south west) -- cycle; },
+    interior code={ \path[tcb fill interior] ([xshift=-2.5mm]interior.west)
+    -- (interior.north west) -- (interior.north east)
+    -- ([xshift=2.5mm]interior.east) -- (interior.south east) -- (interior.south west)
+    -- cycle;}  },
+  listing engine=minted,
+  minted language=xml,
+  minted options={fontsize=\small,mathescape},
+  minted style=colorful,
+  listing only},
+mycsv/.style={mysource,minted language=bat,
+  colback=green!5!white,colframe=green!50!black,
+  coltitle=green!30!black,colbacktitle=green!50!yellow!20!white},
+  }
+
+
+\NewTCBListing{xml}{ O{} }{  mysource, #1}
+
+\NewTCBInputListing{\inputXML}{ O{} m }{mysource,listing file={#2},#1}
+
+\NewTCBInputListing{\inputCSV}{ O{} m }{mycsv,listing file={#2},#1}
+
+\NewTCBListing{csvtext}{ O{} }{mycsv,#1}
+
+\tcbset{cmd/.style={verbatim,colupper=white,fontupper=\ttfamily\bfseries,
+  colback=black!75!white,colframe=black}}
+
+\lstdefinestyle{cmdline}{nolol,columns=fullflexible,
+  aboveskip={0\p@ \@plus 6\p@},
+  belowskip={0\p@ \@plus 6\p@},
+  keepspaces=true,
+  breaklines=true,
+  breakatwhitespace=true,
+  language=command.com,keywordstyle=\bfseries\color{red!35!white},
+  basicstyle=\bfseries\ttfamily\color{white},
+  moredelim={[is][\color{blue!35!white}\sffamily\slshape]{§}{§}}
+  }
+
+\DeclareTotalTCBox{\command}{ s O{} v }
+  {cmd,before upper=\strut,#2}
+  {\IfBooleanTF{#1}{\textcolor{red}{\ttfamily\bfseries > }}{}%
+   \lstinline[style=cmdline]^#3^}
+
+\DeclareTotalTCBox{\comopt}{ O{} v }{cmd,colupper=blue!35!white,fontupper=\bfseries\sffamily\slshape,#1}{#2}
+
+\DeclareTotalTCBox{\comname}{ O{} v }{cmd,#1}{#2}
+
+\DeclareTColorBox{optionbox}{ O{} m m }{%
+  enhanced,colbacktitle=black!75!white,colframe=black,fonttitle=\bfseries\ttfamily,coltitle=white,
+  title={-#2 {\color{blue!35!white}\sffamily\slshape #3}},
+  attach boxed title to top left={yshift=-2mm},boxed title style={cmd}}
+
+\DeclareTotalTCBox{\telement}{ O{} m }{enhanced,on line,size=small,boxrule=0.2pt,
+  fontupper=\ttfamily,colupper=green!40!black,colback=green!10!white,colframe=green!70!black,
+  #1}{<#2>}
+
+\def\element#1{\texorpdfstring{\telement{#1}}{<#1>}}
+
+
+\DeclareTotalTCBox{\attribute}{ O{} m m }{enhanced,on line,size=small,boxrule=0.2pt,
+  fontupper=\ttfamily,colupper=blue!40!black,colback=blue!7!white,colframe=blue!70!black!50!white,
+  #1}{#2=\textcolor{blue!25!red}{\detokenize{"}#3\detokenize{"}}}
+
+\newcommand{\sign}[1]{\textcolor{blue!25!red}{\ttfamily\detokenize{"}#1\detokenize{"}}}
+
+\makeatletter
+\DeclareTColorBox[auto counter]{tabularbox}{ O{} m m }{enhanced,capture=hbox,size=tight,
+  arc=1mm,auto outer arc,boxrule=0.5mm,
+  title={\thetcbcounter: #2},label={#3},center title,colframe=blue!25!red!50!black,
+  colbacktitle=blue!25!red!75!black,
+  fonttitle=\bfseries,toptitle=1mm,bottomtitle=1mm,
+  colback=red!5!white,drop lifted shadow,enlarge left by=(\linewidth-\tcb@width)/2,
+  before upper=\arrayrulecolor{blue!25!red!50!black},
+  float=tb,#1}
+\makeatother
+
+\DeclareTCBox{\versionbox}{ +O{} }{size=small,fontupper=\large\bfseries,
+  colback=red!10!white,colframe=red!30!white,before=\par\bigskip,after=\par,#1}
+
+\NewDocumentCommand{\csvsorter}{}{\textsf{\bfseries\color{red!20!black}CSV-Sorter}}
+
+\newenvironment{changelist}{\begin{list}{}{%
+  \renewcommand{\makelabel}[1]{\tcbox[on line,size=small,boxsep=1pt,
+    colback=blue!50!black,colframe=blue!20!white,fontupper=\footnotesize\sffamily\bfseries,colupper=white]{\makebox[1.2cm]{\strut ##1}}\hfill}%
+  \setlength{\labelwidth}{1.6cm}\setlength{\labelsep}{3mm}%
+  \setlength{\leftmargin}{\labelwidth+\labelsep}%
+  \setlength{\itemsep}{0mm}\setlength{\parsep}{2pt plus 2pt minus 0pt}%%
+}}{\end{list}}
+
+\setcounter{secnumdepth}{4}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\begin{center}
+\begin{tcolorbox}[enhanced,hbox,tikznode,left=8mm,right=8mm,boxrule=0.4pt,
+  colback=white,colframe=black!50!yellow,
+  %drop fuzzy midday shadow=black!50!yellow,
+  drop lifted shadow=black!50!yellow,
+  before=\par\vspace*{5mm},after=\par\bigskip]
+{\bfseries\LARGE The \csvsorter\ program}\\[3mm]
+\scalebox{1.5}{\begin{tikzpicture}
+\fill[top color=red!50!white,bottom color=blue!50!white,middle color=yellow!50!white] (-1,-0.7) rectangle (1,0.7);
+\node[align=center,inner sep=0pt] (csv) {{\bfseries\Large C\kern-.01em\lower.5ex\hbox{S}\kern-.125em V}\\[-0.4ex]\bfseries Sorter};
+\draw[red!10!white,rounded corners,line width=0.7mm,-{Stealth[length=3.1mm,line width=0.3mm,round]}] ([yshift=1mm,xshift=0.1mm]csv.west) -| ([xshift=-3mm,yshift=-6mm]csv.west)
+  -- ([xshift=3mm,yshift=-6mm]csv.east) |- ([yshift=1mm,xshift=-0.1mm]csv.east);
+\draw[blue!10!white,rounded corners,line width=0.7mm,-{Stealth[length=3.1mm,line width=0.3mm,round]}]
+  ([yshift=3mm,xshift=-0.1mm]csv.east) -| ([xshift=3mm,yshift=6mm]csv.east) -- ([xshift=-3mm,yshift=6mm]csv.west)
+  |-([yshift=3mm,xshift=0.1mm]csv.west);
+\draw[red,rounded corners,line width=0.5mm,-{Stealth[length=2.5mm,line width=0.1mm,round]}] ([yshift=1mm]csv.west) -| ([xshift=-3mm,yshift=-6mm]csv.west)
+  -- ([xshift=3mm,yshift=-6mm]csv.east) |- ([yshift=1mm]csv.east);
+\draw[blue,rounded corners,line width=0.5mm,-{Stealth[length=2.5mm,line width=0.1mm,round]}]
+  ([yshift=3mm]csv.east) -| ([xshift=3mm,yshift=6mm]csv.east) -- ([xshift=-3mm,yshift=6mm]csv.west)
+  |-([yshift=3mm]csv.west);
+\end{tikzpicture}}\\[3mm]
+{\large Manual for version \version\ (\datum)}\\[3mm]
+{\footnotesize Documentation \docdatum}\\[3mm]
+\url{http://T-F-S.github.io/csvsorter/}
+\end{tcolorbox}
+{\large Thomas F.~Sturm%
+  \footnote{Prof.~Dr.~Dr.~Thomas F.~Sturm, Institut f\"{u}r Mathematik und Informatik,
+    Universit\"{a}t der Bundeswehr M\"{u}nchen, D-85577 Neubiberg, Germany;
+     email: \href{mailto:thomas.sturm@unibw.de}{thomas.sturm@unibw.de}} }
+\end{center}
+
+\begin{tcolorbox}[breakable,enhanced jigsaw,title={Contents},fonttitle=\bfseries\Large,
+  colback=yellow!10!white,colframe=red!50!yellow!50!white,before=\par\bigskip\noindent,
+  coltitle=red!30!black,colbacktitle=red!50!yellow!20!white,boxrule=0.4pt,arc=0pt,outer arc=0pt,
+  attach boxed title to top center={yshift=-0.25mm-\tcboxedtitleheight/2,yshifttext=2mm-\tcboxedtitleheight/2},
+  boxed title style={enhanced,boxrule=0.4pt},
+  drop lifted shadow]
+\columnseprule=0.4pt%
+\columnsep=1cm%
+\def\columnseprulecolor{\color{red!50!yellow!50!white}}%
+\begin{multicols}{2}
+\makeatletter
+\@starttoc{toc}
+\makeatother
+\end{multicols}%
+\end{tcolorbox}
+
+\clearpage
+\section{Introduction}
+The \csvsorter\ program serves to sort
+CSV\footnote{CSV file: file with comma separated values.} files.
+
+It is a Java command-line program which
+processes one CSV input file to one CSV output file
+controlled by an XML configuration file. Depending on the configuration,
+\csvsorter\  can deal with different formats, separators, delimiters,
+various sorting presets, header and no header files.
+
+The \csvsorter\  program was developed as external sorting program
+for the \texttt{csvsimple} \LaTeX\ package,
+see \url{www.ctan.org/tex-archive/macros/latex/contrib/csvsimple}.
+But it can be used for any CSV sorting task.
+
+\clearpage
+\section{License}
+
+\csvsorter\ is licensed under the
+New BSD License\footnote{\url{http://opensource.org/licenses/BSD-3-Clause}}.
+The New BSD License has been verified as a GPL-compatible free software license by the
+Free Software Foundation\footnote{\url{http://www.fsf.org/}},
+and has been vetted as an open source license by the
+Open Source Initiative\footnote{\url{http://www.opensource.org/}}.
+
+\bigskip
+
+\begin{tcolorbox}[parbox=false,colframe=red!50!black,colback=yellow!10!white]
+Copyright \copyright~2014, Prof.~Dr.~Dr.~Thomas~F.~Sturm\\
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+\begin{enumerate}
+\item Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+\item Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+\item Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+\end{enumerate}
+
+\noindent\textsc{This software is provided by the copyright holders and
+contributors ``as is'' and any express or implied warranties, including, but not
+limited to, the implied warranties of merchantability and fitness for a
+particular purpose are disclaimed. In no event shall the copyright holder or
+contributors be liable for any direct, indirect, incidental, special, exemplary,
+or consequential damages (including, but not limited to, procurement of
+substitute goods or services; loss of use, data, or profits; or business
+interruption) however caused and on any theory of liability, whether in
+contract, strict liability, or tort (including negligence or otherwise) arising
+in any way out of the use of this software, even if advised of the possibility
+of such damage.}
+\end{tcolorbox}
+
+
+
+
+\clearpage
+\section{Installation}
+\subsection{Basic Installation}
+\csvsorter\  is written in Java and needs to have a
+Java virtual machine (version 1.6 or higher) installed.
+With some luck, you already have Java installed on your system.
+To check this, open a command console i.\,e.\ some terminal on Linux
+or executing \comname{cmd.exe} on Windows.
+
+If executing \command*[before upper=]{java -version} on the command-line
+displays some Java version information, you have
+Java installed. Otherwise, you need to install a Java Runtime Environment to proceed.
+
+The \csvsorter\  is an executable Jar-archive named \comname{csvsorter.jar}.
+You can build \comname{csvsorter.jar} from the sources, but this is usually
+not necessary.
+
+Change with your command console to the directory, where you saved \comname{csvsorter.jar}.\\
+Execute the following on the command-line in this directory:\\
+\command*{java -jar csvsorter.jar}
+
+You should see something like\\
+\comname{This is CSV-Sorter} followed by\\
+\comname{Configuration file is missing.} and further text.
+This means that you are ready to use \csvsorter\ 
+in the current directory.
+If you get some Java errors, your installed virtual machine is probably too
+old and you have to update it to use \csvsorter\ .
+
+\subsection{Further Installation}
+The further steps are optional and provide an easier use for \csvsorter\ .
+
+Instead of calling \command*{java -jar csvsorter.jar §options§}, you are
+recommended to create a shortcut batch/script to access \csvsorter\ 
+easily from everywhere on your system.
+
+On Windows, this would be something like:
+
+\begin{xml}[title={csvsorter.cmd},minted language=bat]
+@echo off
+java -jar "c:\SOME PATH STRING\csvsorter.jar" %*
+\end{xml}
+
+Replace \comname{c:\SOME PATH STRING\csvsorter.jar} by the appropriate path
+for \comname{csvsorter.jar}.
+
+Put this \comname{csvsorter.cmd} to a directory which is part of your
+system path. If you do not know where to put this file, create a directory
+\comname{c:\bat}, put the file into it, and \emph{add} the new directory to
+your path variable. A similar script file is recommended for Linux users.
+
+After these steps, \csvsorter\  is accessible system-wide by\\
+\command*{csvsorter §options§}
+
+
+\clearpage
+\section{Usage}
+Depending on the installation done in the last section, \csvsorter\ 
+is called by
+
+\command*{java -jar csvsorter.jar §options§} or\\
+\command*{csvsorter §options§} (used in the following)\par
+where \comopt{options} are the following:
+
+\begin{optionbox}{c}{configuration xml file}
+  This mandatory configuration file controls the processing of the input CSV file.
+  See the following examples and Section~\ref{sec:config} for details.
+\end{optionbox}
+
+\begin{optionbox}{l}{logfile}
+  This file is used to write logging messages.
+  If it is not specified or the configuration is faulty, \comname{csvsorter.log}
+  is used instead.
+\end{optionbox}
+
+\begin{optionbox}{i}{input csv file}
+  The CSV file to process.
+\end{optionbox}
+
+\begin{optionbox}{o}{output csv file}
+  The CSV file to write after processing.
+  It is an error to set the output file equal to the input file.
+\end{optionbox}
+
+\begin{optionbox}{x}{input=output csv file}
+  The CSV file to process and to write after processing (overwriting).
+\end{optionbox}
+
+\begin{itemize}
+\item The presence of a configuration file is mandatory.
+\item Note that the configuration file may contain the rest of the options.
+\item Command-line options override configuration file settings.
+\end{itemize}
+
+\clearpage
+\subsection{Example 1}
+\inputCSV[title={songcontest.csv (input)}]{songcontest.csv}
+
+This CSV file is to be sorted by the first column. Since the input
+file has a header line, the name \comname{Title} for the first
+column can be used inside the configuration file.
+
+\inputXML[title={titlesort.xml (configuration)}]{titlesort.xml}
+
+Processing:
+
+\immediate\write18{csvsorter -c titlesort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\command*{csvsorter -c titlesort.xml -i songcontest.csv -o songcontest_sorted.csv}
+
+Output file:
+
+\inputCSV[title={\detokenize{songcontest_sorted.csv (output)}}]{songcontest_sorted.csv}
+
+Note that the configuration file can be used for any further examples independent
+from the number of columns or the position of the \comname{Title} column.
+
+
+\clearpage
+\subsection{Example 2}
+\inputCSV[title={songcontest.csv}]{songcontest.csv}
+
+This CSV file is to be sorted by the \comname{Televote} numbers in
+descending order. If candidates have the same Televote values, the
+\comname{Country} is used for sorting:
+
+\inputXML[title={televotesort.xml}]{televotesort.xml}
+
+Processing:
+
+\immediate\write18{csvsorter -c televotesort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\command*{csvsorter -c televotesort.xml -i songcontest.csv -o songcontest_sorted.csv}
+
+Output file:
+
+\inputCSV[title={\detokenize{songcontest_sorted.csv}}]{songcontest_sorted.csv}
+
+Note that the configuration file can be used for any further examples independent
+from the number of columns or the position of the \comname{Televote}
+and \comname{Country} columns.
+
+
+\clearpage
+\subsection{Example 3}
+\inputCSV[title={songcontest.csv}]{songcontest.csv}
+
+This CSV file is to be sorted by the sum of the
+\comname{Televote} and \comname{Juryvote} numbers in
+descending order. If candidates have the same values, the
+\comname{Country} is used for sorting:
+
+\inputXML[title={sumsort.xml}]{sumsort.xml}
+
+Processing:
+
+\immediate\write18{csvsorter -c sumsort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\command*{csvsorter -c sumsort.xml -i songcontest.csv -o songcontest_sorted.csv}
+
+Output file:
+
+\inputCSV[title={\detokenize{songcontest_sorted.csv}}]{songcontest_sorted.csv}
+
+Note that the configuration file can be used for any further examples independent
+from the number of columns or the position of the \comname{Televote}, \comname{Juryvote},
+and \comname{Country} columns.
+
+
+\clearpage
+\subsection{Example 4}
+\inputCSV[title={songcontest.csv}]{songcontest.csv}
+
+This CSV file is to be sorted by the sum of the
+\comname{Televote} and \comname{Juryvote} numbers in
+descending order. If candidates have the same values, the
+\comname{Title} is used for sorting.
+The output should contain only \comname{Juryvote}, \comname{Juryvote}, and
+\comname{Title}. Further, we need double quotes as brackets and semicolons
+as delimiters:
+
+\inputXML[title={filtersort.xml}]{filtersort.xml}
+
+Processing:
+
+\immediate\write18{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+
+\command*{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv}
+
+Output file:
+
+\inputCSV[title={\detokenize{songcontest_sorted.csv}}]{songcontest_sorted.csv}
+
+
+
+\clearpage
+\subsection{Example 5}
+\inputCSV[title={gradetab.csv}]{gradetab.csv}
+
+This CSV file is not to be sorted, but just to be reformatted.
+The input uses tabulator signs as delimiters (invisible here).
+The output should use commas and add additional curly braces:
+
+\inputXML[title={format.xml}]{format.xml}
+
+Processing:
+
+\immediate\write18{csvsorter -c format.xml -i gradetab.csv -o gradetab_sorted.csv}%
+
+\command*{csvsorter -c format.xml -i gradetab.csv -o gradetab_sorted.csv}
+
+Output file:
+
+\inputCSV[title={\detokenize{gradetab_sorted.csv}}]{gradetab_sorted.csv}
+
+
+\clearpage
+
+\section{Configuration}\label{sec:config}
+The \csvsorter\  program is controlled by an XML configuration file
+according to the following template.
+
+\begin{xml}[title={Configuration file template}]
+<?xml version="1.0" encoding="UTF-8"?>
+<csv>
+  <noHeader/>
+  <delimiter sign=";"/>
+  <bracket leftsymbol="doublequote" rightsymbol="doublequote" empty="false" />
+  <outDelimiter signsymbol="comma"/>
+  <outBracket left="{" right="}" empty="false"/>
+  <transform/>
+  <contentToLaTeX/>
+  <charset in="InputCharset" out="OutputCharset"/>
+  <language iso="de"/>
+  <sortlines>
+    <column name="Country" order="ascending" type="string"/>
+    <column name="Points" order="ascending" type="integer"/>
+    <column number="2" order="descending" type="string"/>
+    <sum order="ascending" type="integer">
+      <column name="Value"/>
+      <column number="7"/>
+    </sum>
+  </sortlines>
+  <outColumns>
+    <column name="Points"/>
+    <column name="Country"/>
+  </outColumns>
+  <input file="InputFile"/>
+  <output file="OutputFile"/>
+  <log file="LogFile"/>
+</csv>
+\end{xml}
+
+Nearly all tag elements are optional and there is no specific order of appearance.
+The document element
+\element{csv} is mandatory.
+
+\subsection{\element{noheader}}
+If this element is present, the CSV file(s) do not have a header line.
+Note that in this case the columns can be addressed by number only.
+If this element is not present, the first line of the CSV file is
+interpreted as header line and its contents can be used to address
+columns by names.
+
+\subsection{\element{delimiter}}
+This element defines the delimiter sign for the input file. If it is not
+present, the comma is the default delimiter. The actual delimiter sign
+is defined by one of two feasible attributes of the element.
+
+\begin{description}
+\item[\attribute{sign}{,}] The value of the attribute is the actual delimiter sign.
+\item[\attribute{signsymbol}{comma}] The value of the attribute is
+  a symbolic description of the actual delimiter sign.
+  See Table~\ref{symbols} on page \pageref{symbols} for a list of feasible symbol names.
+\end{description}
+
+\begin{tabularbox}{Symbolic sign names}{symbols}
+\begin{tabular}{>{\ttfamily}l|l}
+\bfseries\rmfamily Description & \bfseries Sign\\\hline
+braceleft & \sign{\{} curly brace left\\
+braceright& \sign{\}} curly brace right\\
+comma & \sign{,} comma\\
+doublequote& \sign{\detokenize{"}} double quote\\
+pipe& \sign{\detokenize{|}} pipe\\
+semicolon& \sign{;} semicolon\\
+singlequote& \sign{'} single quote\\
+tab& tabulator sign\\
+\end{tabular}
+\end{tabularbox}
+
+
+\subsection{\element{bracket}}
+This element defines the bracket signs for entries of the input file. If it is not
+present, double quotes are uses as default brackets.
+The actual bracket signs are defined by the following feasible attributes of the element.
+
+\begin{description}
+\item[\attribute{left}{\{}] The value of the attribute is the actual bracket sign.
+\item[\attribute{leftsymbol}{doublequote}] The value of the attribute is
+  a symbolic description of the actual bracket sign.
+  See Table~\ref{symbols} on page \pageref{symbols} for a list of feasible symbol names.
+\item[\attribute{right}{\}}] The value of the attribute is the actual bracket sign.
+\item[\attribute{rightsymbol}{doublequote}] The value of the attribute is
+  a symbolic description of the actual bracket sign.
+  See Table~\ref{symbols} on page \pageref{symbols} for a list of feasible symbol names.
+\item[\attribute{empty}{true}] If the value of the attribute is |true|,
+  no input brackets are used at all. Setting |left| and |right| to an empty
+  string is \emph{not} equivalent to this (actually, this would be ignored)!
+\end{description}
+
+If the brackets are not set empty, brackets still are not mandatory
+to be used in the input file. But if an opening bracket is found in the input file,
+there has to be a matching closing bracket.
+
+
+\subsection{\element{outDelimiter}}
+This element defines the delimiter sign for the output file. If it is not
+present, the input delimiter sign is used for the output also.
+The actual delimiter sign is defined by one of two feasible attributes of the element.
+
+\begin{description}
+\item[\attribute{sign}{,}] The value of the attribute is the actual delimiter sign.
+\item[\attribute{signsymbol}{comma}] The value of the attribute is
+  a symbolic description of the actual delimiter sign.
+  See Table~\ref{symbols} on page \pageref{symbols} for a list of feasible symbol names.
+\end{description}
+
+\clearpage
+\subsection{\element{outBracket}}
+This element defines the bracket signs for entries of the output file. If it is not
+present, the input bracket signs are used as default brackets.
+The actual bracket signs are defined by the following feasible attributes of the element.
+
+\begin{description}
+\item[\attribute{left}{\{}] The value of the attribute is the actual bracket sign.
+\item[\attribute{leftsymbol}{doublequote}] The value of the attribute is
+  a symbolic description of the actual bracket sign.
+  See Table~\ref{symbols} on page \pageref{symbols} for a list of feasible symbol names.
+\item[\attribute{right}{\}}] The value of the attribute is the actual bracket sign.
+\item[\attribute{rightsymbol}{doublequote}] The value of the attribute is
+  a symbolic description of the actual bracket sign.
+  See Table~\ref{symbols} on page \pageref{symbols} for a list of feasible symbol names.
+\item[\attribute{empty}{true}] If the value of the attribute is |true|,
+  no output brackets are used at all. Setting |left| and |right| to an empty
+  string is \emph{not} equivalent to this (actually, this would be ignored)!
+\end{description}
+
+If the lines of the output file are not needed to be transformed and this
+element is not present, the output file is written with the same lines as
+the input file (even with missing brackets).
+
+\subsection{\element{transform}}
+If this element is present, the input lines are always transformed to
+output lines. Actually, output brackets are always set.
+
+\subsection{\element{contentToLaTeX}}
+If this element is present, the content text is processed to be more
+\LaTeX\ friendly. Especially,
+\sign{\textbackslash} is replaced by \sign{\textbackslash textbackslash\{\}},
+\sign{\&} is replaced by \sign{\textbackslash\&\{\}}, etc.
+You should not process a file twice with this setting!
+
+\subsection{\element{charset}}
+This element defines the character set for the input and output files.
+If this element is not present, the default character set of the current
+Java virtual machine is used depending upon the locale and character set of the
+underlying operating system.
+
+\begin{description}
+\item[\attribute{in}{windows-1252}]
+  This defines the character set for the input file.
+\item[\attribute{out}{UTF-8}]
+  This defines the character set for the output file. If an input character set
+  is given but no output character set, then the
+  input character set is used as output character also.
+\end{description}
+
+Feasible charset names are listed in the IANA Charset
+Registry\footnote{\url{http://www.iana.org/assignments/character-sets/character-sets.xhtml}},
+but not all of them will be implemented in the current Java virtual machine.
+Of interest may be \sign{US-ASCII}, \sign{UTF-8} (Unicode),
+\sign{windows-1252} (Windows Western Latin, e.\,g.\ German),
+\sign{IBM850} (DOS-Latin-1).
+
+\clearpage
+\subsection{\element{language}}
+This element defines the language used for sorting, e.\,g.\ for proper
+observance of German umlauts, etc.
+If this element is not present, the default locale of the current
+Java virtual machine is used depending upon the locale of the
+underlying operating system.
+
+\begin{description}
+\item[\attribute{iso}{de}]
+The value of the attribute is the actual ISO 639 alpha-2 or alpha-3 language code,
+e.\,g.\ \sign{de} (German), \sign{en} (English), \sign{fr} (French).
+\end{description}
+
+\clearpage
+\subsection{\element{sortlines}}
+This element defines the actual sorting presets. It may contain a list
+of \element{column} and/or \element{sum} elements for a hierarchical
+sorting specification. The first sub-element has the highest priority.
+
+\subsubsection{\element{column}}
+Defines a sorting rule according to one column. The column has to be
+denoted by \texttt{name} or \texttt{number} and to be set to a \texttt{type}
+of data.
+\begin{description}
+\item[\attribute{name}{NAME}]
+  Denotes the column by a name given by the header line.
+  The value is not case sensitive.
+\item[\attribute{number}{1}]
+  Denotes the column by number (started at 1).
+\item[\attribute{order}{ascending}]
+  Sets the sorting rule to be \sign{ascending} (default) or \sign{descending}.
+\item[\attribute{type}{integer}]
+  Sets the data type.
+  See Table~\ref{datatypes} on page~\pageref{datatypes} for a list of feasible data types.
+  If this attribute is not present, \sign{string} is used as data type.
+\item[\attribute{default}{VALUE}]
+  Sets a default value for the column content. It is used for sorting, if the actual
+  column content cannot be parsed according to the given data type.
+  If this attribute is not present, lines with unparsable content are ignored.
+\end{description}
+
+\begin{tabularbox}{Data types for columns}{datatypes}
+\begin{tabular}{>{\ttfamily}l|l}
+\bfseries\rmfamily Type & \bfseries Comment\\\hline
+integer & integer value between $-2^{31}$ and $2^{31}-1$\\
+long    & long value between $-2^{63}$ and $2^{63}-1$\\
+double  & double precision floating point value (not localized!)\\
+date    & date localized by \element{language}\\
+string  & text localized by \element{language}
+\end{tabular}
+\end{tabularbox}
+
+
+\subsubsection{\element{sum}}
+Defines a sorting rule according to the summarized value of columns.
+The columns a denoted by a list of embedded \element{column} elements.
+Further, the sum has the following attributes:
+\begin{description}
+\item[\attribute{order}{ascending}]
+  Sets the sorting rule to be \sign{ascending} (default) or \sign{descending}.
+\item[\attribute{type}{integer}]
+  Sets the mandatory data type.
+  Feasible data types are \sign{integer}, \sign{long}, and \sign{double} only.
+\item[\attribute{default}{VALUE}]
+  Sets a default value for the sum. It is used for sorting, if the actual
+  sum cannot be computed for any reasons.
+  If this attribute is not present, lines with uncomputable sums are ignored.
+\end{description}
+
+\paragraph{\element{column}}
+Defines one column of the sum. The column has to be
+denoted by \texttt{name} or \texttt{number}.
+\begin{description}
+\item[\attribute{name}{NAME}]
+  Denotes the column by a name given by the header line.
+\item[\attribute{number}{1}]
+  Denotes the column by number (started at 1).
+\end{description}
+
+\clearpage
+\subsection{\element{outColumns}}
+Defines a set of columns to be used for the output file.
+The columns a denoted by a list of embedded \element{column} elements.
+
+\subsubsection{\element{column}}
+Defines one column of the output. The column has to be
+denoted by \texttt{name} or \texttt{number}.
+\begin{description}
+\item[\attribute{name}{NAME}]
+  Denotes the column by a name given by the header line.
+\item[\attribute{number}{1}]
+  Denotes the column by number (started at 1).
+\end{description}
+
+\subsection{\element{input}}
+This element defines the input file.
+The mandatory attribute of the element is:
+\begin{description}
+\item[\attribute{file}{FILENAME}] The value of the attribute is the actual file name.
+\item[\attribute{overwrite}{true}] If this attribute is present and its value equals |true|,
+  the input file is allowed to be overwritten. Note that you have to specify
+  the output file nonetheless. Command-line options may change this setting.
+\end{description}
+The appropriate command-line option overwrites this value.
+
+\subsection{\element{output}}
+This element defines the output file.
+The mandatory attribute of the element is:
+\begin{description}
+\item[\attribute{file}{FILENAME}] The value of the attribute is the actual file name.
+\end{description}
+The appropriate command-line option overwrites this value.
+
+\subsection{\element{log}}
+This element defines the log file.
+The mandatory attribute of the element is:
+\begin{description}
+\item[\attribute{file}{FILENAME}] The value of the attribute is the actual file name.
+\end{description}
+The appropriate command-line option overwrites this value.
+
+
+\clearpage
+\section{Hints, Tricks, and Troubleshooting}
+
+\subsection{Hierarchical brackets}
+The line scanning algorithm tries to identify the columns of the CSV file
+on a best-effort base. Therefore, it always uses the configured
+\element{delimiter} \emph{and} \element{bracket}.
+\begin{itemize}
+\item Brackets can be omitted in the input file, but if an opening bracket was used,
+  there has to be a matching closing bracket.
+\item Everything between a delimiter and an opening bracket is considered
+  a whitespace!
+  Analogously, everything between a closing bracket and a delimiter is considered
+  a whitespace!\par
+  With standard setting,
+\begin{csvtext}
+..., bla " My text" bla,...
+\end{csvtext}
+  is interpreted as
+\begin{csvtext}
+...," My text",...
+\end{csvtext}
+
+\item Inside a bracket pair, a delimiter sign is interpreted as normal text.
+\begin{csvtext}
+...,"one,two",...
+\end{csvtext}
+Here, the single column content is \texttt{one,two}.
+
+\item Brackets are interpreted hierarchically, i.\,e.\ you can have brackets
+  inside brackets. Note that \emph{all} opening brackets need to have
+  matching closing brackets. If the left bracket sign is identical to the
+  right bracket sign (as in the standard case), detection is done on a
+  best-effort base.
+\begin{csvtext}
+...,"one "two", and "three"",...
+\end{csvtext}
+Here, the single column content is \texttt{one "two", and "three"}.
+
+\item With the standard settings, the following line is faulty, even if
+  brackets are omitted:
+\begin{csvtext}
+...,Fl\"ache,...
+\end{csvtext}
+To circumvent the problem, you should configure other bracket signs or empty brackets,
+even if you do not use brackets directly in the input file.
+
+\end{itemize}
+
+
+
+
+\clearpage
+\section{Version History}
+
+\versionbox[before=\par]{Version \version\ (\datum)}
+\begin{changelist}
+\item[fixed]   Data loss, if input and output file are the same, corrected.
+\item[fixed]   Descending string sorting corrected.
+\item[changed] Input and output files are checked to be different.
+\item[changed] 'type' attribute is not mandatory any more (set to 'string' if not present).
+\item[new]     Input=output file with new 'x' command-line option or 'overwrite' attribute.
+\item[new]     Console messages added for error cases.
+\item[new]     'default' attributes for columns and sums added.
+\item[new]     Data type 'long' added.
+\end{changelist}
+
+\versionbox[before=\par]{Version 0.91 beta (2014/07/05)}
+\begin{changelist}
+\item[changed] Hierarchical bracket algorithm improved.
+\item[changed] Speed optimization for brackets (about 50 percent).
+\item[new]     Empty input and output brackets implemented.
+\end{changelist}
+
+\versionbox{Version 0.90 beta (2014/06/30)}
+\begin{changelist}
+\item[new] First public release.
+\end{changelist}
+
+\versionbox{Version unpublished (2008/12)}
+\begin{changelist}
+\item[new] Unpublished private version(s).
+\end{changelist}
+
+\end{document}

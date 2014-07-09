@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CSVSorter program" default="makeJar" basedir=".">
+  <description>
+    CSV-Sorter ANT build
+  </description>
+
+  <property name="version.number" value="0.92-beta"/>
+  <property name="version.date" value="2014/07/09"/>
+
+  <property name="root" location="."/>
+  <property name="src" location="${root}/src"/>
+  <property name="build" location="${root}/bin_ant"/>
+  <property name="dist" location="${root}/dist"/>
+  <property name="archive" location="${root}/archive"/>
+  <property name="testbed" location="${root}/testbed"/>
+
+  <property name="package" value="tfs/csvsorter"/>
+  <property name="jar.name" value="csvsorter"/>
+  <property name="MainProg.name" value="CSVSorter"/>
+  <property name="MainProg.source" location="${src}/${package}/${MainProg.name}.java"/>
+  <property name="mainClass" value="tfs.csvsorter.CSVSorter"/>
+
+  <property name="docdir" location="${root}/doc"/>
+  <property name="jobname" value="csvsorter"/>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="init">
+    <tstamp/>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="versioning" description="imprint the version information" >
+    <buildnumber/>
+    <replaceregexp file="${MainProg.source}"
+                   match="VERSION(\s)*=(.*);"
+                   replace='VERSION = "${version.number}";'
+                   byline="true"/>
+    <replaceregexp file="${MainProg.source}"
+                   match="DATE(\s)*=(.*);"
+                   replace='DATE = "${version.date}";'
+                   byline="true"/>
+    <replaceregexp file="${MainProg.source}"
+                   match="BUILD(\s)*=(.*);"
+                   replace='BUILD = ${build.number};'
+                   byline="true"/>
+    <replaceregexp file="${docdir}/${jobname}.tex"
+                   match="\%\% The csvsorter program(.*)"
+                   replace='\%\% The csvsorter program - version ${version.number} (${version.date})'
+                   byline="true"/>
+    <replaceregexp file="${docdir}/${jobname}.tex"
+                   match="(.*)def\\version\{(.*)\}"
+                   replace='\\\\def\\\\version{${version.number}}'
+                   byline="true"/>
+    <replaceregexp file="${docdir}/${jobname}.tex"
+                   match="(.*)def\\datum\{(.*)\}"
+                   replace='\\\\def\\\\datum{${version.date}}'
+                   byline="true"/>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="compileDebug" depends="init" description="debug compile the source" >
+    <mkdir dir="${build}/${package}" />
+    <javac srcdir="${src}"
+           destdir="${build}"
+           includes="${package}/**"
+           deprecation="on"
+           debug="on"
+           includeAntRuntime="false"
+           />
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="compile" depends="init" description="compile the source" >
+    <mkdir dir="${build}/${package}" />
+    <!-- The bootstrap option is missing in the following -->
+    <javac srcdir="${src}"
+           destdir="${build}"
+           includes="${package}/**"
+           deprecation="on"
+           includeAntRuntime="false"
+           source="1.6"
+           target="1.6"
+           >
+     </javac>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="-jarIt" description="Core of the jar building" >
+    <jar jarfile="${build}/${jar.name}.jar">
+      <fileset dir="${build}">
+        <include name="${package}/**/*.class"/>
+      </fileset>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Built-Date" value="${TODAY} ${TSTAMP}"/>
+        <attribute name="Main-Class" value ="${mainClass}" />
+        <attribute name="Specification-Title" value="CSV-Sorter"/>
+      </manifest>
+    </jar>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="makeJar" depends="versioning,compile,-jarIt" description="build jar-Datei" >
+  </target>
+
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="testbed" depends="clean,compileDebug,-jarIt" description="copy jar-Datei to testbed" >
+    <mkdir dir="${testbed}" />
+    <copy todir="${testbed}">
+      <fileset dir="${build}">
+        <include name="${jar.name}.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="runTestbed" depends="init,testbed" description="starts the program" >
+    <java jar="${testbed}/${jar.name}.jar"
+       fork="true"
+       dir="${testbed}"
+       failonerror="true"
+       jvm="javaw"
+       >
+      <arg value="-c" />
+      <arg value="stresstest.xml" />
+    </java>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="pdflatex" description="PDF-LaTeX" if="jobname">
+    <exec executable="pdflatex" dir="${docdir}">
+      <arg line="--quiet --shell-escape ${jobname}"/>
+    </exec>
+  </target>
+
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="documentation" depends="init" description="Build PDF documentation" if="jobname">
+    <antcall target="pdflatex"/>
+    <antcall target="pdflatex"/>
+  </target>
+
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="distribution" depends="clean,makeJar,documentation" description="generate the distribution" >
+    <mkdir dir="${dist}" />
+    <copy todir="${dist}">
+      <fileset dir="${build}">
+        <include name="${jar.name}.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${dist}">
+      <fileset dir="${docdir}">
+        <include name="${jobname}.pdf"/>
+      </fileset>
+    </copy>
+    <zip destfile="${archive}/csvsorter_${DSTAMP}.zip"  basedir="${dist}"/>
+  </target>
+
+
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="clean" description="clean up" >
+    <delete dir="${build}" />
+    <delete dir="${dist}" />
+  </target>
+
+
+</project>

@@ -1,0 +1,439 @@
+package tfs.csvsorter;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+
+
+/**
+ *  CSVSorter: Sorting of CSV files (main)
+ *
+ * @author     Prof. Dr. Dr. Thomas F. Sturm
+ * @since      December 2008
+ */
+public class CSVSorter
+{  
+  
+  public final static String PROGNAME;
+  public final static String VERSION;
+  public final static String DATE;
+  public final static int BUILD;
+
+  static
+  {
+    VERSION = "0.92-beta";
+    DATE = "2014/07/09";
+    BUILD = 51;
+    PROGNAME = "CSV-Sorter";
+  }
+  
+  public static String getFullVersion()
+  {
+    return PROGNAME + " " + VERSION + " b" + String.valueOf(BUILD) + " (" + DATE + ")";
+  }
+  
+  
+  private enum OPTCODE { c, l, i, o, x };
+
+  private static long startTime;
+  private static String startDate;
+      
+  
+  public CSVSorter(String configFileName, Map<OPTCODE,String> cmdmap) throws Exception
+  {    
+    Configuration configuration = null;
+    try
+    {
+      configuration = new Configuration(configFileName);
+      finalizeConfiguration(configuration,cmdmap);
+    }
+    catch (Exception ex)
+    {
+      PrintWriter log = new PrintWriter(new FileOutputStream(Configuration.LOG_DEFAULT),true);
+      printLogHeader(log);
+      log.println("Configuration Error: the configuration file '"+configFileName+"' could not be processed.");
+      log.println(ex.getMessage());
+      log.close();
+      throw ex;
+    }
+               
+    // Logfile
+    PrintWriter log = new PrintWriter(new FileOutputStream(configuration.getLogFile()),true);
+    printLogHeader(log);       
+    try
+    {
+      processCSV(configuration, log);
+    }
+    catch (Exception ex)
+    {
+      log.println(ex.getMessage());
+      throw ex;
+    }  
+    finally
+    {
+      log.close();
+    }
+  }
+  
+  
+  private void printLogHeader(PrintWriter log)
+  {
+    log.println(getFullVersion());
+    log.println("Start time: "+startDate);
+  }
+  
+
+  
+  private void finalizeConfiguration(Configuration configuration, Map<OPTCODE,String> cmdmap) throws Exception
+  {        
+    // Command line
+    for (OPTCODE optcode : cmdmap.keySet())
+    {
+      String value = cmdmap.get(optcode);
+      switch (optcode)
+      {
+        case i:
+        {
+          configuration.setInputFile(value);
+          configuration.setAllowOverwrite(false);
+          break;
+        }
+        case l:
+        {
+          configuration.setLogFile(value);
+          break;
+        }
+        case o:
+        {
+          configuration.setOutputFile(value);
+          configuration.setAllowOverwrite(false);
+          break;
+        }
+        case x:
+        {
+          configuration.setInputFile(value);
+          configuration.setOutputFile(value);
+          configuration.setAllowOverwrite(true);
+          break;
+        }
+        default:
+      }
+    }
+        
+    // Consistency check  
+    if ((configuration.getInputFile()==null) || (configuration.getOutputFile()==null))
+    {
+      throw new Exception("Specify input and output file");
+    }
+    if (configuration.getInputFile().equals(configuration.getLogFile()))
+    {
+      throw new Exception("Input file and log file are identical");
+    }
+    if ((!configuration.isAllowOverwrite()) && (configuration.getInputFile().equals(configuration.getOutputFile())))
+    {
+      throw new Exception("Input file and output file are identical (see documentation)");
+    }
+  }  
+  
+  
+  
+  private void processCSV(Configuration configuration, PrintWriter log) throws Exception
+  {
+    log.println("------");
+    log.println("Processing of the CSV file started.");
+    log.println("Configuration file: "+configuration.getConfigFile().getAbsolutePath());
+
+    log.println("Input file:         "+configuration.getInputFile().getAbsolutePath());
+    LineNumberReader reader = createInputReader(configuration,log);
+    log.println("Output file:        "+configuration.getOutputFile().getAbsolutePath());
+     
+    log.println("Language: "+configuration.getLocale().getDisplayLanguage()+" ["+configuration.getLocale().getLanguage()+"]");
+    log.println("Input format : "+configuration.getBracketLeft()+"TEXT"+configuration.getBracketRight()+configuration.getDelimiter()+configuration.getBracketLeft()+"TEXT"+configuration.getBracketRight());
+    log.println("Output format: "+configuration.getOutBracketLeft()+"TEXT"+configuration.getOutBracketRight()+configuration.getOutDelimiter()+configuration.getOutBracketLeft()+"TEXT"+configuration.getOutBracketRight());
+    
+    // Header
+    String headline = reader.readLine();
+    if (headline==null)
+    {
+      log.println("Empty input file: "+configuration.getInputFile().getAbsolutePath());
+      reader.close();
+      return;      
+    }
+        
+    // Splitting header
+    LineSplitter lineSplitter = configuration.createLineSplitter();
+    String[] headparts = lineSplitter.splitTrimmed(headline);
+    int columncount = headparts.length;
+    log.println("Columns: "+columncount);
+
+    HashMap<String,Integer> namespalte = new HashMap<String,Integer>();
+    if (configuration.isIgnoreHeader())
+    {
+      // Reset reader
+      reader.close();
+      reader = createInputReader(configuration,log);
+    }
+    else
+    {
+      for (int i=0;i<columncount;i++)
+      {
+        log.println("Column "+(i+1)+": >"+headparts[i]+"<");
+      }
+      // Names to columns
+      for (int i=0; i<columncount; i++)
+      {
+        namespalte.put(headparts[i].toLowerCase(Locale.ROOT), i);      
+      }
+    }
+    
+    if (configuration.isSorting())
+    {
+      for (ColumnComparator cc : configuration.getCcArray())
+      {
+        try
+        {
+          cc.config(namespalte,columncount);
+        }
+        catch (Exception ex)
+        {
+          log.println("Error while setting column names");
+          reader.close();
+          throw ex;        
+        }
+      }
+    }  
+    
+    if (configuration.isFilterOutputColumns())
+    {
+      for (NumberName numName : configuration.getOutColumnArray())
+      {
+        numName.config(namespalte,columncount);
+      }
+    }    
+    
+    int[] indexOutput = null;
+    if (configuration.isFilterOutputColumns())
+    {
+      NumberName[] oca = configuration.getOutColumnArray();
+      indexOutput = new int[oca.length];
+      for (int i=0;i<oca.length;i++)
+      {
+        indexOutput[i] = oca[i].getNumber(); 
+      }
+    }
+    else
+    {
+      indexOutput = new int[headparts.length];
+      for (int i=0;i<headparts.length;i++)
+      {
+        indexOutput[i] = i;
+      }
+    }
+
+    // Process input file
+    ArrayList<LineContainer> content = new ArrayList<LineContainer>();
+    ColumnComparator[] ccArray = configuration.getCcArray();
+        
+    long ignoredLines = 0;
+    String line = reader.readLine();
+    while (line!=null)
+    {
+      try
+      {
+        content.add(LineContainer.makeLineContainer(line, lineSplitter.splitTrimmed(line,columncount), ccArray));
+      }
+      catch (Exception ex)
+      {
+        log.println("Line "+reader.getLineNumber()+" ignored: " + ex.getMessage());
+        ignoredLines++;
+      }      
+      line = reader.readLine();
+    }
+    reader.close();
+    
+    // Sorting
+    if (configuration.isSorting())
+    {   
+      Collections.sort(content);
+    }
+
+    // Output
+    PrintWriter writer = createOutputWriter(configuration,log);    
+    if (configuration.isTransformLine())
+    {
+      if (!configuration.isIgnoreHeader())
+      {
+        writer.println(LineContainer.getTransformedLine(headparts, indexOutput,configuration.getOutDelimiter(),configuration.getOutBracketLeft(), configuration.getOutBracketRight(), configuration.isContentToLaTeX()));
+      }
+      for (LineContainer lc : content)
+      {
+        writer.println(lc.getTransformedLine(indexOutput,configuration.getOutDelimiter(),configuration.getOutBracketLeft(), configuration.getOutBracketRight(), configuration.isContentToLaTeX()));
+      }
+    }
+    else
+    {
+      if (!configuration.isIgnoreHeader())
+      {
+        writer.println(headline);
+      }
+      for (LineContainer lc : content)
+      {
+        writer.println(lc.getOriginalLine());
+      }
+    }
+    writer.close();
+    
+    log.println("Processing of the CSV file finished without errors.");
+    log.println("------");
+    if (!configuration.isIgnoreHeader())
+    {
+      log.println("One header line written.");    
+      
+    }
+    log.println(content.size()+" data lines written.");    
+    if (ignoredLines>0)
+    {
+      log.println(ignoredLines+" input lines were ignored.");    
+    }
+    
+    long estimatedTime = System.nanoTime() - startTime;
+    log.printf(Locale.US, "%.6f seconds processing time.", (double)estimatedTime/1e9);
+  }
+  
+  
+  private LineNumberReader createInputReader(Configuration configuration, PrintWriter log) throws Exception
+  {
+    InputStreamReader inStream = null;
+    if  (configuration.getCharset()!=null)
+    {
+      log.println("Input charset: "+configuration.getCharset());
+      inStream = new InputStreamReader(new FileInputStream(configuration.getInputFile()),configuration.getCharset());
+    }    
+    else
+    {
+      inStream = new InputStreamReader(new FileInputStream(configuration.getInputFile()));
+    }
+    return new LineNumberReader(inStream);    
+  }
+
+  
+  private PrintWriter createOutputWriter(Configuration configuration, PrintWriter log) throws Exception
+  {
+    if  (configuration.getOutCharset()!=null)
+    {
+      log.println("Output charset: "+configuration.getOutCharset());
+      return new PrintWriter(configuration.getOutputFile(),configuration.getOutCharset());
+    }
+    else
+    {
+      return new PrintWriter(configuration.getOutputFile());
+    }
+  }
+  
+  
+  
+  public static void printUsageAndExit()
+  {
+    System.out.println("Usage of CSV Sorter:");
+    System.out.println("java -jar CSVsorter.jar OPTIONS");
+    System.out.println("    where OPTIONS are the following:");
+    System.out.println("  -c configuration xml file (mandatory)");
+    System.out.println("  -l logfile");
+    System.out.println("  -i input csv file");
+    System.out.println("  -o output csv file");
+    System.out.println("  -x input=output csv file");
+    System.out.println("");
+    System.out.println("Example:");
+    System.out.println("java -jar CSVsorter.jar -c myconf.xml -i example.csv -o examplesorted.csv");
+    System.out.println("");
+    System.out.println("Note: The configuration file may contain the rest of the options.");
+    System.out.println("      Command line options override configuration file settings.");
+    System.exit(1);
+  }
+  
+  
+  
+  public static Map<OPTCODE,String> scanConfiguration(String s[])
+  {
+    Map<OPTCODE,String> cmdmap = new HashMap<OPTCODE,String>();
+    int i=0;
+    while (i<s.length-1)
+    {
+      String opt = s[i];
+      if (opt.startsWith("-") && (opt.length()>0))
+      {
+        try
+        {
+          opt = opt.substring(1).toLowerCase();
+          OPTCODE optcode = OPTCODE.valueOf(opt);
+          i++;
+          cmdmap.put(optcode, s[i]);
+        }
+        catch (Exception ex)
+        {
+          System.out.println(opt+" invalid: "+ex.toString());
+          printUsageAndExit();          
+        }
+      }
+      else
+      {
+        System.out.println(opt+" invalid");
+        printUsageAndExit();
+      }
+      i++;      
+    }    
+    if (i<s.length)
+    {
+      System.out.println(s[i]+" invalid: no value given");
+      printUsageAndExit();
+    }
+    return cmdmap;
+  }
+  
+  
+  
+  public static void main(String s[])
+  {
+    startTime = System.nanoTime();
+    Date date = new Date();
+    System.out.println("This is "+getFullVersion());
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    startDate = sdf.format(date);
+    
+    Map<OPTCODE,String> cmdmap = scanConfiguration(s);
+    for (OPTCODE key : cmdmap.keySet())
+    {
+      System.out.println(key.toString()+": "+cmdmap.get(key));
+    }
+    String configFileName = cmdmap.get(OPTCODE.c);
+    if (configFileName==null)
+    {
+      System.out.println("Configuration file is missing.");
+      printUsageAndExit();
+    }
+    cmdmap.remove(OPTCODE.c);
+    try
+    {
+      new CSVSorter(configFileName, cmdmap);
+    }
+    catch (Exception e)
+    {
+      System.out.println("Error: " + e.toString());
+      System.out.println("CSV-Sorter finished with errors.");
+      System.exit(1);
+    }
+    System.out.println("CSV-Sorter finished.");
+  }
+    
+ 
+}

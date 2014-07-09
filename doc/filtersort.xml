@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv>
+  <outDelimiter sign=";"/>
+  <outBracket leftsymbol="doublequote" rightsymbol="doublequote" />
+  <sortlines>
+    <sum order="descending" type="integer">
+      <column name="Televote"/>
+      <column name="Juryvote"/>
+    </sum>
+    <column name="Title" order="ascending" type="string"/>
+  </sortlines>
+  <outColumns>
+    <column name="Televote"/>
+    <column name="Juryvote"/>
+    <column name="Title"/>
+  </outColumns>
+</csv>
