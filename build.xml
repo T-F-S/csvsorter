@@ -4,8 +4,8 @@
     CSV-Sorter ANT build
   </description>
 
-  <property name="version.number" value="0.92-beta"/>
-  <property name="version.date" value="2014/07/09"/>
+  <property name="version.number" value="0.93 beta"/>
+  <property name="version.date" value="2014/07/11"/>
 
   <property name="root" location="."/>
   <property name="src" location="${root}/src"/>
@@ -13,6 +13,7 @@
   <property name="dist" location="${root}/dist"/>
   <property name="archive" location="${root}/archive"/>
   <property name="testbed" location="${root}/testbed"/>
+  <property name="launcher" location="${root}/launcher"/>
 
   <property name="package" value="tfs/csvsorter"/>
   <property name="jar.name" value="csvsorter"/>
@@ -22,6 +23,11 @@
 
   <property name="docdir" location="${root}/doc"/>
   <property name="jobname" value="csvsorter"/>
+
+  <property name="launch4j.dir" location="c:\Program Files\Launch4j" />
+  <taskdef name="launch4j"
+    classname="net.sf.launch4j.ant.Launch4jTask"
+    classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
 
 
   <!-- /////////////////////////////////////////////////////////////////////////// -->
@@ -152,13 +158,22 @@
   </target>
 
 
+  <!-- /////////////////////////////////////////////////////////////////////////// -->
+  <target name="makeLauncher" depends="makeJar" description="Create Windows Launcher" >
+    <copy file="${launcher}/launch4j.xml" todir="${build}"/>
+    <copy file="${launcher}/csvsorter.ico" todir="${build}"/>
+    <launch4j configFile="${build}/launch4j.xml"/>
+  </target>
+
+
 
   <!-- /////////////////////////////////////////////////////////////////////////// -->
-  <target name="distribution" depends="clean,makeJar,documentation" description="generate the distribution" >
+  <target name="distribution" depends="clean,makeJar,makeLauncher,documentation" description="generate the distribution" >
     <mkdir dir="${dist}" />
     <copy todir="${dist}">
       <fileset dir="${build}">
         <include name="${jar.name}.jar"/>
+        <include name="${jar.name}.exe"/>
       </fileset>
     </copy>
     <copy todir="${dist}">

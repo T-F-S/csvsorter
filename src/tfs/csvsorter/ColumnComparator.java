@@ -16,5 +16,6 @@ interface ColumnComparator
   
   public void config(HashMap<String,Integer> nameToColumn, int maxNumber) throws Exception;
    
+  public String getDescription();
   
 }

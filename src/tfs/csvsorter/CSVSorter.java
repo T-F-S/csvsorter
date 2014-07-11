@@ -31,9 +31,9 @@ public class CSVSorter
 
   static
   {
-    VERSION = "0.92-beta";
-    DATE = "2014/07/09";
-    BUILD = 51;
+    VERSION = "0.93 beta";
+    DATE = "2014/07/11";
+    BUILD = 55;
     PROGNAME = "CSV-Sorter";
   }
   
@@ -187,7 +187,7 @@ public class CSVSorter
     {
       for (int i=0;i<columncount;i++)
       {
-        log.println("Column "+(i+1)+": >"+headparts[i]+"<");
+        log.println("  Column "+(i+1)+": \""+headparts[i]+"\"");
       }
       // Names to columns
       for (int i=0; i<columncount; i++)
@@ -196,13 +196,16 @@ public class CSVSorter
       }
     }
     
+    ColumnComparator[] ccArray = configuration.getCcArray();
     if (configuration.isSorting())
     {
-      for (ColumnComparator cc : configuration.getCcArray())
+      log.println("Sorting rules:");
+      for (int i=0; i<ccArray.length; i++)
       {
         try
         {
-          cc.config(namespalte,columncount);
+          ccArray[i].config(namespalte,columncount);
+          log.println("  "+(i+1)+". "+ccArray[i].getDescription());          
         }
         catch (Exception ex)
         {
@@ -240,9 +243,10 @@ public class CSVSorter
       }
     }
 
+    log.println("------");
+    log.println("Processing the CSV file...");
     // Process input file
     ArrayList<LineContainer> content = new ArrayList<LineContainer>();
-    ColumnComparator[] ccArray = configuration.getCcArray();
         
     long ignoredLines = 0;
     String line = reader.readLine();
@@ -344,8 +348,9 @@ public class CSVSorter
   
   public static void printUsageAndExit()
   {
+    System.out.println("");
     System.out.println("Usage of CSV Sorter:");
-    System.out.println("java -jar CSVsorter.jar OPTIONS");
+    System.out.println("java -jar csvsorter.jar OPTIONS");
     System.out.println("    where OPTIONS are the following:");
     System.out.println("  -c configuration xml file (mandatory)");
     System.out.println("  -l logfile");
@@ -353,8 +358,11 @@ public class CSVSorter
     System.out.println("  -o output csv file");
     System.out.println("  -x input=output csv file");
     System.out.println("");
-    System.out.println("Example:");
-    System.out.println("java -jar CSVsorter.jar -c myconf.xml -i example.csv -o examplesorted.csv");
+    System.out.println("Example (all platforms):");
+    System.out.println("java -jar csvsorter.jar -c myconf.xml -i example.csv -o examplesorted.csv");
+    System.out.println("");
+    System.out.println("Example (Windows):");
+    System.out.println("csvsorter.exe -c myconf.xml -i example.csv -o examplesorted.csv");
     System.out.println("");
     System.out.println("Note: The configuration file may contain the rest of the options.");
     System.out.println("      Command line options override configuration file settings.");

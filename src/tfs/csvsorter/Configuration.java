@@ -293,7 +293,7 @@ public class Configuration
   private ColumnComparator makeColumnComparator(Element elColumn) throws Exception
   {
     NumberName numberName = new NumberName(elColumn);
-    String type = elColumn.getAttribute("type");
+    String type = elColumn.getAttribute("type").toLowerCase();
     boolean ascending = !(elColumn.getAttribute("order").toLowerCase().equals("descending"));
     String defaultString = elColumn.getAttribute("default");
     
@@ -327,7 +327,7 @@ public class Configuration
   
   private ColumnComparator makeSumColumnComparator(Element elSum) throws Exception
   {
-    String type = elSum.getAttribute("type");
+    String type = elSum.getAttribute("type").toLowerCase();
     boolean ascending = !(elSum.getAttribute("order").toLowerCase().equals("descending"));
     String defaultString = elSum.getAttribute("default");    
 

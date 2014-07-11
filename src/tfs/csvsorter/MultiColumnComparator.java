@@ -11,14 +11,48 @@ import java.util.HashMap;
 abstract class MultiColumnComparator implements ColumnComparator
 {
 
-  NumberName[] numberNames;
+  private NumberName[] numberNames;
+  private boolean ascending;
+  private String type;
+  private String defaultValue;
 
 
-  public MultiColumnComparator(NumberName[] numberNames) throws Exception
+  public MultiColumnComparator(NumberName[] numberNames, boolean ascending, String type, String defaultValue)
   {
     this.numberNames = numberNames;
+    this.ascending = ascending;
+    this.type = type;
+    this.defaultValue = defaultValue;
   }
 
+  
+  public String getDescription()
+  {
+    String s = "Sort "+numberNames[0].getDescription();
+    for (int i=1;i<numberNames.length;i++)
+    {
+      s += " + " + numberNames[i].getDescription();
+    }
+    s += " in ";
+    if (ascending)
+    {
+      s += "ascending";
+    }
+    else
+    {
+      s += "descending";
+    }
+    s += " order as "+type;
+    if (!defaultValue.equals(""))
+    {
+      return s + " (default: "+defaultValue+").";
+    }
+    else
+    {
+      return s+".";
+    }
+  }
+  
 
   public NumberName[] getNumberNames()
   {
@@ -73,11 +107,12 @@ abstract class MultiColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static MultiColumnComparator createIntegerComparator(NumberName[] numberNames, boolean ascending, String defaultString) throws Exception
   {
+    final String type="integer";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new MultiColumnComparator(numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -88,7 +123,7 @@ abstract class MultiColumnComparator implements ColumnComparator
       else
       {
         final Integer defaultKey = Integer.valueOf(defaultString);
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -108,7 +143,7 @@ abstract class MultiColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -119,7 +154,7 @@ abstract class MultiColumnComparator implements ColumnComparator
       else
       {
         final Integer defaultKey = new Integer(-Integer.parseInt(defaultString));
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -142,11 +177,12 @@ abstract class MultiColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static MultiColumnComparator createLongComparator(NumberName[] numberNames, boolean ascending, String defaultString) throws Exception
   {
+    final String type="long";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new MultiColumnComparator(numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -157,7 +193,7 @@ abstract class MultiColumnComparator implements ColumnComparator
       else
       {
         final Long defaultKey = Long.valueOf(defaultString);
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -177,7 +213,7 @@ abstract class MultiColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -188,7 +224,7 @@ abstract class MultiColumnComparator implements ColumnComparator
       else
       {
         final Long defaultKey = new Long(-Long.parseLong(defaultString));
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -211,11 +247,12 @@ abstract class MultiColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static MultiColumnComparator createDoubleComparator(NumberName[] numberNames, boolean ascending, String defaultString) throws Exception
   {
+    final String type="double";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new MultiColumnComparator(numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -226,7 +263,7 @@ abstract class MultiColumnComparator implements ColumnComparator
       else
       {
         final Double defaultKey = Double.valueOf(defaultString);
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -246,7 +283,7 @@ abstract class MultiColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -257,7 +294,7 @@ abstract class MultiColumnComparator implements ColumnComparator
       else
       {
         final Double defaultKey = new Double(-Double.parseDouble(defaultString));
-        return new MultiColumnComparator (numberNames)
+        return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {

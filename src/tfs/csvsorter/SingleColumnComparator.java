@@ -17,11 +17,40 @@ abstract class SingleColumnComparator implements ColumnComparator
 {
 
   private NumberName numberName;
+  private boolean ascending;
+  private String type;
+  private String defaultValue;
 
 
-  public SingleColumnComparator(NumberName numberName)
+  public SingleColumnComparator(NumberName numberName, boolean ascending, String type, String defaultValue)
   {
     this.numberName = numberName;
+    this.ascending = ascending;
+    this.type = type;
+    this.defaultValue = defaultValue;
+  }
+  
+  
+  public String getDescription()
+  {
+    String s = "Sort "+numberName.getDescription()+" in ";
+    if (ascending)
+    {
+      s += "ascending";
+    }
+    else
+    {
+      s += "descending";
+    }
+    s += " order as "+type;
+    if (!defaultValue.equals(""))
+    {
+      return s + " (default: "+defaultValue+").";
+    }
+    else
+    {
+      return s+".";
+    }
   }
 
 
@@ -63,11 +92,12 @@ abstract class SingleColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static SingleColumnComparator createIntegerComparator(NumberName numberName, boolean ascending, String defaultString) throws Exception
   {
+    final String type="integer";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator(numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -78,7 +108,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Integer defaultKey = Integer.valueOf(defaultString);
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -98,7 +128,7 @@ abstract class SingleColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -109,7 +139,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Integer defaultKey = new Integer(-Integer.parseInt(defaultString));
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -132,11 +162,12 @@ abstract class SingleColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static SingleColumnComparator createLongComparator(NumberName numberName, boolean ascending, String defaultString) throws Exception
   {
+    final String type="long";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator(numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -147,7 +178,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Long defaultKey = Long.valueOf(defaultString);
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -167,7 +198,7 @@ abstract class SingleColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -178,7 +209,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Long defaultKey = new Long(-Long.parseLong(defaultString));
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -201,11 +232,12 @@ abstract class SingleColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static SingleColumnComparator createDoubleComparator(NumberName numberName, boolean ascending, String defaultString) throws Exception
   {
+    final String type="double";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator(numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -216,7 +248,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Double defaultKey = Double.valueOf(defaultString);
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -236,7 +268,7 @@ abstract class SingleColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -247,7 +279,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Double defaultKey = new Double(-Double.parseDouble(defaultString));
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -270,11 +302,12 @@ abstract class SingleColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static SingleColumnComparator createDateComparator(NumberName numberName, final Locale locale, boolean ascending, String defaultString) throws Exception
   {
+    final String type="date";
     if (ascending)
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator(numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -285,7 +318,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Long defaultKey = new Long(DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(defaultString).getTime());
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -305,7 +338,7 @@ abstract class SingleColumnComparator implements ColumnComparator
     {
       if (defaultString.equals(""))
       {
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -316,7 +349,7 @@ abstract class SingleColumnComparator implements ColumnComparator
       else
       {
         final Long defaultKey = new Long(-DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(defaultString).getTime());
-        return new SingleColumnComparator (numberName)
+        return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
@@ -339,9 +372,10 @@ abstract class SingleColumnComparator implements ColumnComparator
   @SuppressWarnings("rawtypes")
   public static SingleColumnComparator createStringComparator(NumberName numberName, final Collator collator, boolean ascending) throws Exception
   {
+    final String type="string";
     if (ascending)
     {
-      return new SingleColumnComparator(numberName)
+      return new SingleColumnComparator(numberName,ascending,type,"")
       {
         
         public Comparable generateKey(String[] parts) throws Exception
@@ -352,7 +386,7 @@ abstract class SingleColumnComparator implements ColumnComparator
     }
     else
     {
-      return new SingleColumnComparator (numberName)
+      return new SingleColumnComparator(numberName,ascending,type,"")
       {
         public Comparable generateKey(String[] parts) throws Exception
         {

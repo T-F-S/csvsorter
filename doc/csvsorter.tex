@@ -1,5 +1,5 @@
 % \LaTeX-Main\
-%% The csvsorter program - version 0.92-beta (2014/07/09)
+%% The csvsorter program - version 0.93 beta (2014/07/11)
 %% csvsorter.tex: Manual
 %%
 %% Copyright (c) 2014, Prof. Dr. Dr. Thomas F. Sturm
@@ -70,8 +70,8 @@
 \usepackage[many,listings,minted]{tcolorbox}
 \usetikzlibrary{arrows.meta}
 
-\def\version{0.92-beta}%
-\def\datum{2014/07/09}%
+\def\version{0.93 beta}%
+\def\datum{2014/07/11}%
 \def\docdatum{\datum}
 
 \hypersetup{
@@ -296,7 +296,7 @@ of such damage.}
 
 \clearpage
 \section{Installation}
-\subsection{Basic Installation}
+
 \csvsorter\  is written in Java and needs to have a
 Java virtual machine (version 1.6 or higher) installed.
 With some luck, you already have Java installed on your system.
@@ -306,6 +306,13 @@ or executing \comname{cmd.exe} on Windows.
 If executing \command*[before upper=]{java -version} on the command-line
 displays some Java version information, you have
 Java installed. Otherwise, you need to install a Java Runtime Environment to proceed.
+
+\csvsorter\ is a portable program which needs not necessarily be installed in
+some way. See Subsection~\ref{basiccommon} and Subsection~\ref{basicwindows}
+how to execute \csvsorter. Further installation steps are found in Subsection~\ref{furtherinstallcommon}
+and in Subsection~\ref{furtherinstallwindows}.
+
+\subsection{Basic Execution (platform-independent)}\label{basiccommon}
 
 The \csvsorter\  is an executable Jar-archive named \comname{csvsorter.jar}.
 You can build \comname{csvsorter.jar} from the sources, but this is usually
@@ -323,7 +330,26 @@ in the current directory.
 If you get some Java errors, your installed virtual machine is probably too
 old and you have to update it to use \csvsorter\ .
 
-\subsection{Further Installation}
+
+\subsection{Basic Execution (Windows)}\label{basicwindows}
+
+The \csvsorter\  is wrapped into a Windows native executable named \comname{csvsorter.exe}.
+It does not provide a GUI and therefore cannot be started by double-clicking.
+Instead, open a command console with \comname{cmd.exe}, change with it
+to the directory where you saved \comname{csvsorter.exe}.
+Execute the program on the command-line in this directory:\\
+\command*{csvsorter.exe}
+
+You should see something like\\
+\comname{This is CSV-Sorter} followed by\\
+\comname{Configuration file is missing.} and further text.
+This means that you are ready to use \csvsorter\ 
+in the current directory.
+If you get some Java errors, your installed virtual machine is probably too
+old and you have to update it to use \csvsorter\ .
+
+\clearpage
+\subsection{Further Installation (somewhat platform-independent)}\label{furtherinstallcommon}
 The further steps are optional and provide an easier use for \csvsorter\ .
 
 Instead of calling \command*{java -jar csvsorter.jar §options§}, you are
@@ -343,10 +369,27 @@ for \comname{csvsorter.jar}.
 Put this \comname{csvsorter.cmd} to a directory which is part of your
 system path. If you do not know where to put this file, create a directory
 \comname{c:\bat}, put the file into it, and \emph{add} the new directory to
-your path variable. A similar script file is recommended for Linux users.
+your path variable.
+
+A similar script file is recommended for Linux users:
+
+\begin{xml}[title={csvsorter},minted language=bash]
+#!/bin/bash
+java -jar "/SOME PATH STRING/csvsorter.jar" $@
+# further:   chmod u+x csvsorter
+\end{xml}
+\catcode`\Q=14 Q$
+\catcode`\Q=11
 
 After these steps, \csvsorter\  is accessible system-wide by\\
 \command*{csvsorter §options§}
+
+
+\subsection{Further Installation (Windows)}\label{furtherinstallwindows}
+Copy the \comname{csvsorter.exe} into a directory which is part of your
+system path. If you intend to use it with the |csvsimple| \LaTeX\ package,
+you could put it e.\,g.\ into the directory of the
+\LaTeX\ binaries.
 
 
 \clearpage
@@ -853,7 +896,15 @@ even if you do not use brackets directly in the input file.
 \clearpage
 \section{Version History}
 
-\versionbox[before=\par]{Version \version\ (\datum)}
+%\versionbox[before=\par]{Version \version\ (\datum)}
+
+\versionbox[before=\par]{Version 0.93 beta (2014/07/11)}
+\begin{changelist}
+\item[new]     Windows native executable wrapping the Jar-archive added.
+\item[new]     More log messages added.
+\end{changelist}
+
+\versionbox{Version 0.92 beta (2014/07/09)}
 \begin{changelist}
 \item[fixed]   Data loss, if input and output file are the same, corrected.
 \item[fixed]   Descending string sorting corrected.
@@ -865,7 +916,7 @@ even if you do not use brackets directly in the input file.
 \item[new]     Data type 'long' added.
 \end{changelist}
 
-\versionbox[before=\par]{Version 0.91 beta (2014/07/05)}
+\versionbox{Version 0.91 beta (2014/07/05)}
 \begin{changelist}
 \item[changed] Hierarchical bracket algorithm improved.
 \item[changed] Speed optimization for brackets (about 50 percent).

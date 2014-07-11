@@ -67,6 +67,20 @@ class NumberName
   }
   
   
+  public String getDescription()
+  {
+    if (name!=null)
+    {
+      return "\""+name+"\"["+getNumberPlusOne()+"]";
+    }
+    else
+    {
+      return "["+getNumberPlusOne()+"]";
+    }
+  }
+
+  
+  
   public void config(HashMap<String,Integer> nameToColumn, int maxNumber) throws Exception
   {
     if (number<0)
