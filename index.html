@@ -1,76 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>CSV-Sorter by T-F-S</title>
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="CSV-Sorter : A Java command-line CSV sorting program." />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>CSV-Sorter</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <p class="header"><img src="images/csvsorterlogo-small.png" alt="CSV-Sorter"></p>
-        <h1 class="header">CSV-Sorter</h1>
-        <p class="header">A Java command-line CSV sorting program.</p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="http://T-F-S.github.io/csvsorter/csvsorter.pdf">Documentation</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/T-F-S/csvsorter">View on GitHub</a>
 
-        <p class="header">Binary downloads (compiled application plus documentation):</p>
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/T-F-S/csvsorter/releases/download/v0.92/csvsorter_0.92.zip">v 0.92 beta</a></li>
-        </ul>
+          <h1 id="project_title">CSV-Sorter</h1>
+          <h2 id="project_tagline">A Java command-line CSV sorting program.</h2>
 
-        <p class="header">Source downloads:</p>
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/T-F-S/csvsorter/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/T-F-S/csvsorter/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/T-F-S/csvsorter">View On GitHub</a></li>
-        </ul>
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/T-F-S">Thomas F. Sturm</a></p>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/T-F-S/csvsorter/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/T-F-S/csvsorter/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="csv-sorter" class="anchor" href="#csv-sorter"><span class="octicon octicon-link"></span></a>CSV-Sorter</h1>
 
-<h1><a name="CSV-Sorter" class="anchor" href="#csvsorter"><span class="octicon octicon-link"></span></a>CSV-Sorter</h1>
+<p>The <code>csvsorter</code>program serves to sort CSV files.</p>
 
-<p>The <code>csvsorter</code> program serves to sort CSV files.</p>
+<p>It is a Java command-line program which processes one CSV input file to one CSV output file controlled by an XML configuration file. Depending on the configuration, csvsorter can deal with different formats, separators, delimiters, various sorting presets, header and no header files.</p>
 
-<p>It is a Java command-line program which
-processes one CSV input file to one CSV output file
-controlled by an XML configuration file. Depending on the configuration,
-<code>csvsorter</code>  can deal with different formats, separators, delimiters,
-various sorting presets, header and no header files.</p>
-
-<p>The <code>csvsorter</code>  program was developed as external sorting program
-for the <a href="http://www.ctan.org/tex-archive/macros/latex/contrib/csvsimple">csvsimple</a>
-<code>LaTeX</code>-package. But it can be used for any CSV sorting task.</p>
+<p>The csvsorter program was developed as external sorting program for the <a href="http://www.ctan.org/tex-archive/macros/latex/contrib/csvsimple">csvsimple</a> LaTeX-package. But it can be used for any CSV sorting task.</p>
 
 <ul>
-  <li><a href="http://T-F-S.github.io/csvsorter/csvsorter.pdf">Documentation</a></li>
-  <li><a href="https://github.com/T-F-S/csvsorter/releases/download/v0.92/csvsorter_0.92.zip">Binary Application (version 0.92 beta)</a></li>
-  <li><a href="https://github.com/T-F-S/csvsorter/releases/latest">Latest release on GitHub</a></li>
-</ul>
-
-<h2><a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+<li><a href="http://t-f-s.github.io/csvsorter/csvsorter.pdf">Documentation</a></li>
+<li><a href="https://github.com/T-F-S/csvsorter/releases/download/v0.93/csvsorter_0.93.zip">Binary Application (version 0.93 beta)</a></li>
+<li><a href="https://github.com/T-F-S/csvsorter/releases/latest">Latest release on GitHub</a></li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>This application is licensed under the
 <a href="http://opensource.org/licenses/BSD-3-Clause">3-Clause ("New") BSD license</a>.</p>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">CSV-Sorter maintained by <a href="https://github.com/T-F-S">T-F-S</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+    
 
   </body>
 </html>
