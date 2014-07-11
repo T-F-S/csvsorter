@@ -49,22 +49,23 @@
 </ul><h1>
 <a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h1>
 
-<p>Consider the following CSV file names <strong><code>songcontest.csv</code></strong>:</p>
+<p>Consider the following CSV file named <strong><code>songcontest.csv</code></strong>:</p>
 
-<pre><code>Title,Artist,Country,Televote,Juryvote
-La la la la la,The Singers,United Kingdom,25,62
-One and two and three,Hansi Unterober,Germany,47,35
-Rarara,Channel Rats,Grand Fenwick,12,14
-The green hills of the shire,Frodo and Friends,New Zealand,76,45
-Paris e Calais,Chantal and Pascal,France,47,41
-The bell rings,Baab,Sweden,87,24
-</code></pre>
+<div class="highlight highlight-bat"><pre>Title<span class="p">,</span>Artist<span class="p">,</span>Country<span class="p">,</span>Televote<span class="p">,</span>Juryvote
+La la la la la<span class="p">,</span>The Singers<span class="p">,</span>United Kingdom<span class="p">,</span><span class="m">25</span><span class="p">,</span><span class="m">62</span>
+One and two and three<span class="p">,</span>Hansi Unterober<span class="p">,</span>Germany<span class="p">,</span><span class="m">47</span><span class="p">,</span><span class="m">35</span>
+Rarara<span class="p">,</span>Channel Rats<span class="p">,</span>Grand Fenwick<span class="p">,</span><span class="m">12</span><span class="p">,</span><span class="m">14</span>
+The green hills of the shire<span class="p">,</span>Frodo and Friends<span class="p">,</span>New Zealand<span class="p">,</span><span class="m">76</span><span class="p">,</span><span class="m">45</span>
+Paris e Calais<span class="p">,</span>Chantal and Pascal<span class="p">,</span>France<span class="p">,</span><span class="m">47</span><span class="p">,</span><span class="m">41</span>
+The bell rings<span class="p">,</span>Baab<span class="p">,</span>Sweden<span class="p">,</span><span class="m">87</span><span class="p">,</span><span class="m">24</span>
+</pre></div>
 
 <p>This CSV file is to be sorted by the sum of the
 <code>Televote</code>and <code>Juryvote</code>numbers in
 descending order. If candidates have the same values, the
-<code>Country</code> is used for sorting.
-For this, the following XML configuration file <strong><code>sumsort.xml</code></strong> is used:</p>
+<code>Country</code> is used for sorting.</p>
+
+<p>For this, the following XML configuration file <strong><code>sumsort.xml</code></strong> is used:</p>
 
 <div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;csv&gt;</span>
@@ -84,14 +85,14 @@ For this, the following XML configuration file <strong><code>sumsort.xml</code><
 
 <p>The result is the sorted file <strong><code>songcontest_sorted.csv</code></strong>:</p>
 
-<pre><code>Title,Artist,Country,Televote,Juryvote
-The green hills of the shire,Frodo and Friends,New Zealand,76,45
-The bell rings,Baab,Sweden,87,24
-Paris e Calais,Chantal and Pascal,France,47,41
-La la la la la,The Singers,United Kingdom,25,62
-One and two and three,Hansi Unterober,Germany,47,35
-Rarara,Channel Rats,Grand Fenwick,12,14
-</code></pre>
+<div class="highlight highlight-bat"><pre>Title<span class="p">,</span>Artist<span class="p">,</span>Country<span class="p">,</span>Televote<span class="p">,</span>Juryvote
+The green hills of the shire<span class="p">,</span>Frodo and Friends<span class="p">,</span>New Zealand<span class="p">,</span><span class="m">76</span><span class="p">,</span><span class="m">45</span>
+The bell rings<span class="p">,</span>Baab<span class="p">,</span>Sweden<span class="p">,</span><span class="m">87</span><span class="p">,</span><span class="m">24</span>
+Paris e Calais<span class="p">,</span>Chantal and Pascal<span class="p">,</span>France<span class="p">,</span><span class="m">47</span><span class="p">,</span><span class="m">41</span>
+La la la la la<span class="p">,</span>The Singers<span class="p">,</span>United Kingdom<span class="p">,</span><span class="m">25</span><span class="p">,</span><span class="m">62</span>
+One and two and three<span class="p">,</span>Hansi Unterober<span class="p">,</span>Germany<span class="p">,</span><span class="m">47</span><span class="p">,</span><span class="m">35</span>
+Rarara<span class="p">,</span>Channel Rats<span class="p">,</span>Grand Fenwick<span class="p">,</span><span class="m">12</span><span class="p">,</span><span class="m">14</span>
+</pre></div>
 
 <h1>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
