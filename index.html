@@ -66,17 +66,17 @@ descending order. If candidates have the same values, the
 <code>Country</code> is used for sorting.
 For this, the following XML configuration file <strong><code>sumsort.xml</code></strong> is used:</p>
 
-<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;csv&gt;
-  &lt;sortlines&gt;
-    &lt;sum order="descending" type="integer"&gt;
-      &lt;column name="Televote"/&gt;
-      &lt;column name="Juryvote"/&gt;
-    &lt;/sum&gt;
-    &lt;column name="Country" order="ascending" type="string"/&gt;
-  &lt;/sortlines&gt;
-&lt;/csv&gt;
-</code></pre>
+<div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;csv&gt;</span>
+  <span class="nt">&lt;sortlines&gt;</span>
+    <span class="nt">&lt;sum</span> <span class="na">order=</span><span class="s">"descending"</span> <span class="na">type=</span><span class="s">"integer"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;column</span> <span class="na">name=</span><span class="s">"Televote"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;column</span> <span class="na">name=</span><span class="s">"Juryvote"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/sum&gt;</span>
+    <span class="nt">&lt;column</span> <span class="na">name=</span><span class="s">"Country"</span> <span class="na">order=</span><span class="s">"ascending"</span> <span class="na">type=</span><span class="s">"string"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/sortlines&gt;</span>
+<span class="nt">&lt;/csv&gt;</span>
+</pre></div>
 
 <p>Now, <code>csvsorter</code> is applied by </p>
 
