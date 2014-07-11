@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
     <title>CSV-Sorter</title>
-	<link rel="icon" type="image/x-icon" href="images/favicon.ico">  </head>
+  </head>
 
   <body>
 
@@ -31,10 +31,10 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>
-<p align="center"><img src="images/csvsorterlogo-small.png" alt="CSV-Sorter"></p>
-<a name="csv-sorter" class="anchor" href="#csv-sorter"><span class="octicon octicon-link"></span></a>CSV-Sorter</h1>
+        <p><img src="images/csvsorterlogo-small.png" alt="CSV-Sorter"></p>
 
+<h1>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h1>
 
 <p>The <code>csvsorter</code>program serves to sort CSV files.</p>
 
@@ -46,8 +46,55 @@
 <li><a href="http://t-f-s.github.io/csvsorter/csvsorter.pdf">Documentation</a></li>
 <li><a href="https://github.com/T-F-S/csvsorter/releases/download/v0.93/csvsorter_0.93.zip">Binary Application (version 0.93 beta)</a></li>
 <li><a href="https://github.com/T-F-S/csvsorter/releases/latest">Latest release on GitHub</a></li>
-</ul><h2>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+</ul><h1>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h1>
+
+<p>Consider the following CSV file names <strong><code>songcontest.csv</code></strong>:</p>
+
+<pre><code>Title,Artist,Country,Televote,Juryvote
+La la la la la,The Singers,United Kingdom,25,62
+One and two and three,Hansi Unterober,Germany,47,35
+Rarara,Channel Rats,Grand Fenwick,12,14
+The green hills of the shire,Frodo and Friends,New Zealand,76,45
+Paris e Calais,Chantal and Pascal,France,47,41
+The bell rings,Baab,Sweden,87,24
+</code></pre>
+
+<p>This CSV file is to be sorted by the sum of the
+<code>Televote</code>and <code>Juryvote</code>numbers in
+descending order. If candidates have the same values, the
+<code>Country</code> is used for sorting.
+For this, the following XML configuration file <strong><code>sumsort.xml</code></strong> is used:</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;csv&gt;
+  &lt;sortlines&gt;
+    &lt;sum order="descending" type="integer"&gt;
+      &lt;column name="Televote"/&gt;
+      &lt;column name="Juryvote"/&gt;
+    &lt;/sum&gt;
+    &lt;column name="Country" order="ascending" type="string"/&gt;
+  &lt;/sortlines&gt;
+&lt;/csv&gt;
+</code></pre>
+
+<p>Now, <code>csvsorter</code> is applied by </p>
+
+<p><strong><code>csvsorter -c sumsort.xml -i songcontest.csv -o songcontest_sorted.csv</code></strong></p>
+
+<p>The result is the sorted file <strong><code>songcontest_sorted.csv</code></strong>:</p>
+
+<pre><code>Title,Artist,Country,Televote,Juryvote
+The green hills of the shire,Frodo and Friends,New Zealand,76,45
+The bell rings,Baab,Sweden,87,24
+Paris e Calais,Chantal and Pascal,France,47,41
+La la la la la,The Singers,United Kingdom,25,62
+One and two and three,Hansi Unterober,Germany,47,35
+Rarara,Channel Rats,Grand Fenwick,12,14
+</code></pre>
+
+<h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
 
 <p>This application is licensed under the
 <a href="http://opensource.org/licenses/BSD-3-Clause">3-Clause ("New") BSD license</a>.</p>
