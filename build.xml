@@ -4,8 +4,8 @@
     CSV-Sorter ANT build
   </description>
 
-  <property name="version.number" value="0.93 beta"/>
-  <property name="version.date" value="2014/07/11"/>
+  <property name="version.number" value="0.94 beta"/>
+  <property name="version.date" value="2014/07/14"/>
 
   <property name="root" location="."/>
   <property name="src" location="${root}/src"/>

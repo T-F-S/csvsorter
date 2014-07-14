@@ -1,5 +1,5 @@
 % \LaTeX-Main\
-%% The csvsorter program - version 0.93 beta (2014/07/11)
+%% The csvsorter program - version 0.94 beta (2014/07/14)
 %% csvsorter.tex: Manual
 %%
 %% Copyright (c) 2014, Prof. Dr. Dr. Thomas F. Sturm
@@ -44,6 +44,7 @@
 \usepackage{varioref}
 \usepackage[pdftex,bookmarks,raiselinks,pageanchor,hyperindex,colorlinks]{hyperref}
 \usepackage{varwidth,cleveref,incgraph}
+\usepackage{array,booktabs,csvsimple}
 
 \usepackage[a4paper,left=2.5cm,right=2.5cm,top=1.5cm,bottom=1.5cm,
     marginparsep=5mm,marginparwidth=10mm,
@@ -70,14 +71,15 @@
 \usepackage[many,listings,minted]{tcolorbox}
 \usetikzlibrary{arrows.meta}
 
-\def\version{0.93 beta}%
-\def\datum{2014/07/11}%
+\def\version{0.94 beta}%
+\def\datum{2014/07/14}%
 \def\docdatum{\datum}
 
 \hypersetup{
   pdftitle={Manual for the csvsorter program},
   pdfauthor={Thomas F. Sturm},
 }
+
 
 \tcbset{mysource/.style={
   enhanced,colback=yellow!10!white,colframe=red!50!black,
@@ -425,6 +427,17 @@ where \comopt{options} are the following:
   The CSV file to process and to write after processing (overwriting).
 \end{optionbox}
 
+\begin{optionbox}{t}{token file}
+  If the processing was successful, this file is written with content |\relax|.
+  If there was no success, nothing happens.
+  This file is used as token for interaction with the |csvsimple| \LaTeX package.
+\end{optionbox}
+
+\begin{optionbox}{q}{number}
+  If the number is zero, terminal messages are printed. Otherwise,
+  \csvsorter\ keeps quiet on the terminal, if no errors occur.
+\end{optionbox}
+
 \begin{itemize}
 \item The presence of a configuration file is mandatory.
 \item Note that the configuration file may contain the rest of the options.
@@ -443,7 +456,7 @@ column can be used inside the configuration file.
 
 Processing:
 
-\immediate\write18{csvsorter -c titlesort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\immediate\write18{csvsorter -c titlesort.xml -i songcontest.csv -o songcontest_sorted.csv -l csvsorter.csvlog}%
 \command*{csvsorter -c titlesort.xml -i songcontest.csv -o songcontest_sorted.csv}
 
 Output file:
@@ -466,7 +479,7 @@ descending order. If candidates have the same Televote values, the
 
 Processing:
 
-\immediate\write18{csvsorter -c televotesort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\immediate\write18{csvsorter -c televotesort.xml -i songcontest.csv -o songcontest_sorted.csv -l csvsorter.csvlog}%
 \command*{csvsorter -c televotesort.xml -i songcontest.csv -o songcontest_sorted.csv}
 
 Output file:
@@ -491,7 +504,7 @@ descending order. If candidates have the same values, the
 
 Processing:
 
-\immediate\write18{csvsorter -c sumsort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\immediate\write18{csvsorter -c sumsort.xml -i songcontest.csv -o songcontest_sorted.csv -l csvsorter.csvlog}%
 \command*{csvsorter -c sumsort.xml -i songcontest.csv -o songcontest_sorted.csv}
 
 Output file:
@@ -519,13 +532,43 @@ as delimiters:
 
 Processing:
 
-\immediate\write18{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv}%
+\immediate\write18{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv -l csvsorter.csvlog}%
 
 \command*{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv}
 
 Output file:
 
 \inputCSV[title={\detokenize{songcontest_sorted.csv}}]{songcontest_sorted.csv}
+
+\clearpage
+
+The example is continued with a demonstration of on-the-fly sort in
+\LaTeX\ documents using
+the |csvsimple|\footnote{\url{www.ctan.org/tex-archive/macros/latex/contrib/csvsimple}}
+package.
+
+Instead of sorting the |songcontest.csv| example beforehand, it can be
+sorted on-the-fly while compiling a \LaTeX\ document:
+
+\csvset{csvsorter log=csvsorter.csvlog}
+\begin{tcblisting}{mycsv,title={\LaTeX\ example},listing and text,
+  minted language=latex,bicolor,colbacklower=white,fontlower=\small}
+% \documentclass{article}
+% \usepackage{array,booktabs,csvsimple}
+% \begin{document}
+
+\csvreader[sort by=sumsort.xml,
+  head to column names,
+  tabular=lllcc,
+  table head=\toprule\textbf{Artist} & \textbf{Title} & \textbf{Country} &
+             \textbf{Points} & \textbf{TV+JV}\\\midrule,
+  table foot=\bottomrule]
+{songcontest.csv}{}
+{\Artist & \itshape''\Title'' & \Country &
+ \bfseries\the\numexpr\Televote+\Juryvote\relax & $(\Televote+\Juryvote)$}
+
+% \end{document}
+\end{tcblisting}
 
 
 
@@ -541,7 +584,7 @@ The output should use commas and add additional curly braces:
 
 Processing:
 
-\immediate\write18{csvsorter -c format.xml -i gradetab.csv -o gradetab_sorted.csv}%
+\immediate\write18{csvsorter -c format.xml -i gradetab.csv -o gradetab_sorted.csv -l csvsorter.csvlog}%
 
 \command*{csvsorter -c format.xml -i gradetab.csv -o gradetab_sorted.csv}
 
@@ -898,7 +941,13 @@ even if you do not use brackets directly in the input file.
 
 %\versionbox[before=\par]{Version \version\ (\datum)}
 
-\versionbox[before=\par]{Version 0.93 beta (2014/07/11)}
+\versionbox[before=\par]{Version 0.94 beta (2014/07/14)}
+\begin{changelist}
+\item[new]     Token file for interaction with |csvsimple| with new command-line option 't'.
+\item[new]     New command-line option 'q' to set quiet state.
+\end{changelist}
+
+\versionbox{Version 0.93 beta (2014/07/11)}
 \begin{changelist}
 \item[new]     Windows native executable wrapping the Jar-archive added.
 \item[new]     More log messages added.

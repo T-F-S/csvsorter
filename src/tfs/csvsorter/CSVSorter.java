@@ -31,9 +31,9 @@ public class CSVSorter
 
   static
   {
-    VERSION = "0.93 beta";
-    DATE = "2014/07/11";
-    BUILD = 55;
+    VERSION = "0.94 beta";
+    DATE = "2014/07/14";
+    BUILD = 58;
     PROGNAME = "CSV-Sorter";
   }
   
@@ -42,11 +42,16 @@ public class CSVSorter
     return PROGNAME + " " + VERSION + " b" + String.valueOf(BUILD) + " (" + DATE + ")";
   }
   
+  public static String getCopyright()
+  {
+    return "Copyright (c) 2014, Prof. Dr. Dr. Thomas F. Sturm";
+  }
   
-  private enum OPTCODE { c, l, i, o, x };
+  private enum OPTCODE { c, l, i, o, x, t, q };
 
   private static long startTime;
   private static String startDate;
+  private static int quiet=0;
       
   
   public CSVSorter(String configFileName, Map<OPTCODE,String> cmdmap) throws Exception
@@ -83,12 +88,20 @@ public class CSVSorter
     {
       log.close();
     }
+    
+    if (configuration.getTokenFile()!=null)
+    {
+      PrintWriter token = new PrintWriter(new FileOutputStream(configuration.getTokenFile()),true);
+      token.println("\\relax");
+      token.close();
+    }
   }
   
   
   private void printLogHeader(PrintWriter log)
   {
     log.println(getFullVersion());
+    log.println(getCopyright());
     log.println("Start time: "+startDate);
   }
   
@@ -125,6 +138,10 @@ public class CSVSorter
           configuration.setOutputFile(value);
           configuration.setAllowOverwrite(true);
           break;
+        }
+        case t:
+        {
+          configuration.setTokenFile(value);
         }
         default:
       }
@@ -345,6 +362,13 @@ public class CSVSorter
   }
   
   
+  public static void printWelcome()
+  {
+    System.out.println("This is "+getFullVersion());
+    System.out.println(getCopyright());
+    System.out.println("");
+  }
+  
   
   public static void printUsageAndExit()
   {
@@ -357,6 +381,8 @@ public class CSVSorter
     System.out.println("  -i input csv file");
     System.out.println("  -o output csv file");
     System.out.println("  -x input=output csv file");
+    System.out.println("  -t token file");
+    System.out.println("  -q number");
     System.out.println("");
     System.out.println("Example (all platforms):");
     System.out.println("java -jar csvsorter.jar -c myconf.xml -i example.csv -o examplesorted.csv");
@@ -367,6 +393,14 @@ public class CSVSorter
     System.out.println("Note: The configuration file may contain the rest of the options.");
     System.out.println("      Command line options override configuration file settings.");
     System.exit(1);
+  }
+
+  
+  public static void printEarlyErrorAndExit(String message)
+  {
+    printWelcome();
+    System.out.println(message);
+    printUsageAndExit();              
   }
   
   
@@ -389,21 +423,18 @@ public class CSVSorter
         }
         catch (Exception ex)
         {
-          System.out.println(opt+" invalid: "+ex.toString());
-          printUsageAndExit();          
+          printEarlyErrorAndExit(opt+" invalid: "+ex.toString());          
         }
       }
       else
       {
-        System.out.println(opt+" invalid");
-        printUsageAndExit();
+        printEarlyErrorAndExit(opt+" invalid");
       }
       i++;      
     }    
     if (i<s.length)
     {
-      System.out.println(s[i]+" invalid: no value given");
-      printUsageAndExit();
+      printEarlyErrorAndExit(s[i]+" invalid: no value given");
     }
     return cmdmap;
   }
@@ -414,33 +445,51 @@ public class CSVSorter
   {
     startTime = System.nanoTime();
     Date date = new Date();
+    /*
     System.out.println("This is "+getFullVersion());
+    System.out.println(getCopyright());
+    System.out.println("");
+    */
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     startDate = sdf.format(date);
     
     Map<OPTCODE,String> cmdmap = scanConfiguration(s);
-    for (OPTCODE key : cmdmap.keySet())
-    {
-      System.out.println(key.toString()+": "+cmdmap.get(key));
-    }
     String configFileName = cmdmap.get(OPTCODE.c);
     if (configFileName==null)
     {
-      System.out.println("Configuration file is missing.");
-      printUsageAndExit();
+      printEarlyErrorAndExit("Configuration file is missing.");
     }
     cmdmap.remove(OPTCODE.c);
+    
+    try
+    {
+      quiet = Integer.parseInt(cmdmap.get(OPTCODE.q));     
+    }
+    catch (Exception ex) {};
+    cmdmap.remove(OPTCODE.q);
+    
+    if (quiet==0)
+    {
+      printWelcome();
+    }    
     try
     {
       new CSVSorter(configFileName, cmdmap);
     }
     catch (Exception e)
     {
+      if (quiet!=0)
+      {
+        printWelcome();
+      }          
       System.out.println("Error: " + e.toString());
       System.out.println("CSV-Sorter finished with errors.");
       System.exit(1);
     }
-    System.out.println("CSV-Sorter finished.");
+    if (quiet==0)
+    {
+      System.out.println("CSV-Sorter finished gracefully.");
+    }
   }
     
  

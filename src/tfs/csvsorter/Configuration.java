@@ -32,6 +32,7 @@ public class Configuration
   private File inputFile  = null;
   private File outputFile = null;
   private File logFile = null;
+  private File tokenFile = null;
   private String delimiter = ",";
   private String bracketLeft = "\"";
   private String bracketRight = "\"";  
@@ -244,11 +245,12 @@ public class Configuration
       for (Element elColumn : getChildElements(elSortlines))
       {
         ColumnComparator cc = null;
-        if (elColumn.getNodeName().equals("column"))
+        String nodeName = elColumn.getNodeName();
+        if (nodeName.equals("column"))
         {      
           cc = makeColumnComparator(elColumn);
         }
-        else if (elColumn.getNodeName().equals("sum"))
+        else if (nodeName.equals("sum"))
         {
           cc = makeSumColumnComparator(elColumn);
         }      
@@ -258,7 +260,7 @@ public class Configuration
         }
         else
         {
-          System.out.println("Configuration error");
+          throw new Exception("Unknown child "+nodeName+" inside <sortlines>");
         }      
       }
     }
@@ -633,6 +635,18 @@ public class Configuration
   public final void setAllowOverwrite(boolean allowOverwrite)
   {
     this.allowOverwrite = allowOverwrite;
+  }
+
+
+  public final File getTokenFile()
+  {
+    return tokenFile;
+  }
+
+
+  public final void setTokenFile(String tokenFileName) throws IOException
+  {
+    this.tokenFile = new File(tokenFileName).getCanonicalFile();
   }
   
     
