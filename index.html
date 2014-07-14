@@ -9,7 +9,6 @@
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
     <title>CSV-Sorter</title>
-	<link rel="icon" type="image/x-icon" href="images/favicon.ico">
   </head>
 
   <body>
@@ -32,7 +31,7 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p align="center"><img src="images/csvsorterlogo-small.png" alt="CSV-Sorter"></p>
+        <p><img src="images/csvsorterlogo-small.png" alt="CSV-Sorter"></p>
 
 <h1>
 <a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h1>
@@ -45,7 +44,7 @@
 
 <ul>
 <li><a href="http://t-f-s.github.io/csvsorter/csvsorter.pdf">Documentation</a></li>
-<li><a href="https://github.com/T-F-S/csvsorter/releases/download/v0.93/csvsorter_0.93.zip">Binary Application (version 0.93 beta)</a></li>
+<li><a href="https://github.com/T-F-S/csvsorter/releases/download/v0.94/csvsorter_0.94.zip">Binary Application (version 0.94 beta)</a></li>
 <li><a href="https://github.com/T-F-S/csvsorter/releases/latest">Latest release on GitHub</a></li>
 </ul><h1>
 <a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h1>
@@ -94,6 +93,40 @@ La la la la la<span class="p">,</span>The Singers<span class="p">,</span>United 
 One and two and three<span class="p">,</span>Hansi Unterober<span class="p">,</span>Germany<span class="p">,</span><span class="m">47</span><span class="p">,</span><span class="m">35</span>
 Rarara<span class="p">,</span>Channel Rats<span class="p">,</span>Grand Fenwick<span class="p">,</span><span class="m">12</span><span class="p">,</span><span class="m">14</span>
 </pre></div>
+
+<h1>
+<a name="example-continued-for-latex" class="anchor" href="#example-continued-for-latex"><span class="octicon octicon-link"></span></a>Example (continued for LaTeX)</h1>
+
+<p>The example is continued with a demonstration of on-the-fly sort in
+<code>LaTeX</code> documents using the 
+<a href="http://www.ctan.org/tex-archive/macros/latex/contrib/csvsimple">csvsimple</a>
+package.</p>
+
+<p>Instead of sorting the <code>songcontest.csv</code> example beforehand, it can be
+sorted on-the-fly while compiling a <code>LaTeX</code> document:</p>
+
+<div class="highlight highlight-latex"><pre><span class="c">% \documentclass{article}</span>
+<span class="c">% \usepackage{array,booktabs,csvsimple}</span>
+<span class="c">% \begin{document}</span>
+
+<span class="k">\csvreader</span>[sort by=sumsort.xml,
+  head to column names,
+  tabular=lllcc,
+  table head=<span class="k">\toprule\textbf</span><span class="nb">{</span>Artist<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Title<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Country<span class="nb">}</span> <span class="nb">&amp;</span>
+             <span class="k">\textbf</span><span class="nb">{</span>Points<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>TV+JV<span class="nb">}</span><span class="k">\\\midrule</span>,
+  table foot=<span class="k">\bottomrule</span>]
+<span class="nb">{</span>songcontest.csv<span class="nb">}{}</span>
+<span class="nb">{</span><span class="k">\Artist</span> <span class="nb">&amp;</span> <span class="k">\itshape</span>''<span class="k">\Title</span>'' <span class="nb">&amp;</span> <span class="k">\Country</span> <span class="nb">&amp;</span>
+ <span class="k">\bfseries\the\numexpr\Televote</span>+<span class="k">\Juryvote\relax</span> <span class="nb">&amp;</span> <span class="s">$</span><span class="o">(</span><span class="nv">\Televote</span><span class="o">+</span><span class="nv">\Juryvote</span><span class="o">)</span><span class="s">$</span><span class="nb">}</span>
+
+<span class="c">% \end{document}</span>
+</pre></div>
+
+<p>The result after compilation with <code>(pdf)latex</code> is:</p>
+
+<blockquote>
+<p><img src="images/exampletable.png" alt=""></p>
+</blockquote>
 
 <h1>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
