@@ -73,7 +73,7 @@
 
 \def\version{0.94 beta}%
 \def\datum{2014/07/14}%
-\def\docdatum{\datum}
+\def\docdatum{2014/07/19}
 
 \hypersetup{
   pdftitle={Manual for the csvsorter program},
@@ -515,31 +515,6 @@ Note that the configuration file can be used for any further examples independen
 from the number of columns or the position of the \comname{Televote}, \comname{Juryvote},
 and \comname{Country} columns.
 
-
-\clearpage
-\subsection{Example 4}
-\inputCSV[title={songcontest.csv}]{songcontest.csv}
-
-This CSV file is to be sorted by the sum of the
-\comname{Televote} and \comname{Juryvote} numbers in
-descending order. If candidates have the same values, the
-\comname{Title} is used for sorting.
-The output should contain only \comname{Juryvote}, \comname{Juryvote}, and
-\comname{Title}. Further, we need double quotes as brackets and semicolons
-as delimiters:
-
-\inputXML[title={filtersort.xml}]{filtersort.xml}
-
-Processing:
-
-\immediate\write18{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv -l csvsorter.csvlog}%
-
-\command*{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv}
-
-Output file:
-
-\inputCSV[title={\detokenize{songcontest_sorted.csv}}]{songcontest_sorted.csv}
-
 \clearpage
 
 The example is continued with a demonstration of on-the-fly sort in
@@ -569,6 +544,31 @@ sorted on-the-fly while compiling a \LaTeX\ document:
 
 % \end{document}
 \end{tcblisting}
+
+
+\clearpage
+\subsection{Example 4}
+\inputCSV[title={songcontest.csv}]{songcontest.csv}
+
+This CSV file is to be sorted by the sum of the
+\comname{Televote} and \comname{Juryvote} numbers in
+descending order. If candidates have the same values, the
+\comname{Title} is used for sorting.
+The output should contain only \comname{Juryvote}, \comname{Juryvote}, and
+\comname{Title}. Further, we need double quotes as brackets and semicolons
+as delimiters:
+
+\inputXML[title={filtersort.xml}]{filtersort.xml}
+
+Processing:
+
+\immediate\write18{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv -l csvsorter.csvlog}%
+
+\command*{csvsorter -c filtersort.xml -i songcontest.csv -o songcontest_sorted.csv}
+
+Output file:
+
+\inputCSV[title={\detokenize{songcontest_sorted.csv}}]{songcontest_sorted.csv}
 
 
 
