@@ -31,9 +31,9 @@ public class CSVSorter
 
   static
   {
-    VERSION = "0.94 beta";
-    DATE = "2014/07/14";
-    BUILD = 58;
+    VERSION = "0.95 beta";
+    DATE = "2018/01/11";
+    BUILD = 74;
     PROGNAME = "CSV-Sorter";
   }
   
@@ -44,7 +44,7 @@ public class CSVSorter
   
   public static String getCopyright()
   {
-    return "Copyright (c) 2014, Prof. Dr. Dr. Thomas F. Sturm";
+    return "Copyright (c) 2014-2018, Prof. Dr. Dr. Thomas F. Sturm";
   }
   
   private enum OPTCODE { c, l, i, o, x, t, q };
@@ -102,6 +102,7 @@ public class CSVSorter
   {
     log.println(getFullVersion());
     log.println(getCopyright());
+    log.println("Java Version: "+System.getProperty("java.version"));
     log.println("Start time: "+startDate);
   }
   
@@ -445,11 +446,6 @@ public class CSVSorter
   {
     startTime = System.nanoTime();
     Date date = new Date();
-    /*
-    System.out.println("This is "+getFullVersion());
-    System.out.println(getCopyright());
-    System.out.println("");
-    */
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     startDate = sdf.format(date);
     

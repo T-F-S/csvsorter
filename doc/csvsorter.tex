@@ -1,8 +1,8 @@
 % \LaTeX-Main\
-%% The csvsorter program - version 0.94 beta (2014/07/14)
+%% The csvsorter program - version 0.95 beta (2018/01/11)
 %% csvsorter.tex: Manual
 %%
-%% Copyright (c) 2014, Prof. Dr. Dr. Thomas F. Sturm
+%% Copyright (c) 2014-2018, Prof. Dr. Dr. Thomas F. Sturm
 %% All rights reserved.
 %%
 %% Redistribution and  use in source  and binary forms, with or without
@@ -37,7 +37,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
 \usepackage[english]{babel}
-\usepackage{lmodern,parskip,array,ifthen,calc}
+\usepackage{lmodern,parskip,array}
 \usepackage{amsmath,amssymb}
 \usepackage[svgnames,table,hyperref]{xcolor}
 \usepackage{tikz}
@@ -71,9 +71,9 @@
 \usepackage[many,listings,minted]{tcolorbox}
 \usetikzlibrary{arrows.meta}
 
-\def\version{0.94 beta}%
-\def\datum{2014/07/14}%
-\def\docdatum{2014/07/19}
+\def\version{0.95 beta}%
+\def\datum{2018/01/11}%
+\def\docdatum{2018/01/11}
 
 \hypersetup{
   pdftitle={Manual for the csvsorter program},
@@ -162,7 +162,7 @@ mycsv/.style={mysource,minted language=bat,
   title={\thetcbcounter: #2},label={#3},center title,colframe=blue!25!red!50!black,
   colbacktitle=blue!25!red!75!black,
   fonttitle=\bfseries,toptitle=1mm,bottomtitle=1mm,
-  colback=red!5!white,drop lifted shadow,enlarge left by=(\linewidth-\tcb@width)/2,
+  colback=red!5!white,drop lifted shadow,center,
   before upper=\arrayrulecolor{blue!25!red!50!black},
   float=tb,#1}
 \makeatother
@@ -187,10 +187,8 @@ mycsv/.style={mysource,minted language=bat,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\begin{center}
-\begin{tcolorbox}[enhanced,hbox,tikznode,left=8mm,right=8mm,boxrule=0.4pt,
+\begin{tcolorbox}[enhanced,center,hbox,tikznode,left=8mm,right=8mm,boxrule=0.4pt,
   colback=white,colframe=black!50!yellow,
-  %drop fuzzy midday shadow=black!50!yellow,
   drop lifted shadow=black!50!yellow,
   before=\par\vspace*{5mm},after=\par\bigskip]
 {\bfseries\LARGE The \csvsorter\ program}\\[3mm]
@@ -212,6 +210,7 @@ mycsv/.style={mysource,minted language=bat,
 {\footnotesize Documentation \docdatum}\\[3mm]
 \url{http://T-F-S.github.io/csvsorter/}
 \end{tcolorbox}
+\begin{center}
 {\large Thomas F.~Sturm%
   \footnote{Prof.~Dr.~Dr.~Thomas F.~Sturm, Institut f\"{u}r Mathematik und Informatik,
     Universit\"{a}t der Bundeswehr M\"{u}nchen, D-85577 Neubiberg, Germany;
@@ -247,7 +246,7 @@ various sorting presets, header and no header files.
 
 The \csvsorter\  program was developed as external sorting program
 for the \texttt{csvsimple} \LaTeX\ package,
-see \url{www.ctan.org/tex-archive/macros/latex/contrib/csvsimple}.
+see \url{http://www.ctan.org/tex-archive/macros/latex/contrib/csvsimple}.
 But it can be used for any CSV sorting task.
 
 \clearpage
@@ -263,7 +262,7 @@ Open Source Initiative\footnote{\url{http://www.opensource.org/}}.
 \bigskip
 
 \begin{tcolorbox}[parbox=false,colframe=red!50!black,colback=yellow!10!white]
-Copyright \copyright~2014, Prof.~Dr.~Dr.~Thomas~F.~Sturm\\
+Copyright \copyright~2014-2018, Prof.~Dr.~Dr.~Thomas~F.~Sturm\\
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -634,7 +633,7 @@ Nearly all tag elements are optional and there is no specific order of appearanc
 The document element
 \element{csv} is mandatory.
 
-\subsection{\element{noheader}}
+\subsection{\element{noHeader}}
 If this element is present, the CSV file(s) do not have a header line.
 Note that in this case the columns can be addressed by number only.
 If this element is not present, the first line of the CSV file is
@@ -940,8 +939,15 @@ even if you do not use brackets directly in the input file.
 \section{Version History}
 
 %\versionbox[before=\par]{Version \version\ (\datum)}
+\versionbox[before=\par]{Version 0.95 beta (2018/01/11)}
+\begin{changelist}
+\item[changed] Windows launcher |csvsorter.exe| can be used for Java 9 now.
+\item[changed] Java 7 or newer is required now.
+\item[fixed]   Deprecated constructors replaced.
+\item[fixed]   Documentation corrected for \element{noHeader}.
+\end{changelist}
 
-\versionbox[before=\par]{Version 0.94 beta (2014/07/14)}
+\versionbox{Version 0.94 beta (2014/07/14)}
 \begin{changelist}
 \item[new]     Token file for interaction with |csvsimple| with new command-line option 't'.
 \item[new]     New command-line option 'q' to set quiet state.

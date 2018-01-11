@@ -66,24 +66,25 @@ abstract class SingleColumnComparator implements ColumnComparator
   }
 
 
-  int getIntegerValue(String[] parts) throws Exception
+  Integer getIntegerValue(String[] parts) throws Exception
   {
-    return Integer.parseInt(parts[numberName.getNumber()]);
+    return Integer.valueOf(parts[numberName.getNumber()]);
   }
 
-  long getLongValue(String[] parts) throws Exception
+  
+  Long getLongValue(String[] parts) throws Exception
   {
-    return Long.parseLong(parts[numberName.getNumber()]);
-  }
-
-
-  double getDoubleValue(String[] parts) throws Exception
-  {
-    return Double.parseDouble(parts[numberName.getNumber()]);
+    return Long.valueOf(parts[numberName.getNumber()]);
   }
 
 
-  long getDateValue(String[] parts, Locale locale) throws Exception
+  Double getDoubleValue(String[] parts) throws Exception
+  {
+    return Double.valueOf(parts[numberName.getNumber()]);
+  }
+
+
+  Long getDateValue(String[] parts, Locale locale) throws Exception
   {
     return DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(parts[getNumber()]).getTime();
   }
@@ -101,7 +102,7 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Integer(getIntegerValue(parts));
+            return getIntegerValue(parts);
           }
         };
       }
@@ -114,7 +115,7 @@ abstract class SingleColumnComparator implements ColumnComparator
           {
             try
             {
-              return new Integer(getIntegerValue(parts));
+              return getIntegerValue(parts);
             }
             catch (Exception e)
             {
@@ -132,20 +133,20 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Integer(-getIntegerValue(parts));
+            return Integer.valueOf(-getIntegerValue(parts));
           }
         };
       }
       else
       {
-        final Integer defaultKey = new Integer(-Integer.parseInt(defaultString));
+        final Integer defaultKey = Integer.valueOf(-Integer.parseInt(defaultString));
         return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Integer(-getIntegerValue(parts));
+              return Integer.valueOf(-getIntegerValue(parts));
             }
             catch (Exception e)
             {
@@ -171,7 +172,7 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Long(getLongValue(parts));
+            return getLongValue(parts);
           }
         };
       }
@@ -184,7 +185,7 @@ abstract class SingleColumnComparator implements ColumnComparator
           {
             try
             {
-              return new Long(getLongValue(parts));
+              return getLongValue(parts);
             }
             catch (Exception e)
             {
@@ -202,20 +203,20 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Long(-getLongValue(parts));
+            return Long.valueOf(-getLongValue(parts));
           }
         };
       }
       else
       {
-        final Long defaultKey = new Long(-Long.parseLong(defaultString));
+        final Long defaultKey = Long.valueOf(-Long.parseLong(defaultString));
         return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Long(-getLongValue(parts));
+              return Long.valueOf(-getLongValue(parts));
             }
             catch (Exception e)
             {
@@ -241,7 +242,7 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Double(getDoubleValue(parts));
+            return getDoubleValue(parts);
           }
         };
       }
@@ -254,7 +255,7 @@ abstract class SingleColumnComparator implements ColumnComparator
           {
             try
             {
-              return new Double(getDoubleValue(parts));
+              return getDoubleValue(parts);
             }
             catch (Exception e)
             {
@@ -272,20 +273,20 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Double(-getDoubleValue(parts));
+            return Double.valueOf(-getDoubleValue(parts));
           }
         };
       }
       else
       {
-        final Double defaultKey = new Double(-Double.parseDouble(defaultString));
+        final Double defaultKey = Double.valueOf(-Double.parseDouble(defaultString));
         return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Double(-getDoubleValue(parts));
+              return Double.valueOf(-getDoubleValue(parts));
             }
             catch (Exception e)
             {
@@ -311,20 +312,20 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Long(getDateValue(parts,locale));
+            return getDateValue(parts,locale);
           }
         };
       }
       else
       {
-        final Long defaultKey = new Long(DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(defaultString).getTime());
+        final Long defaultKey = DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(defaultString).getTime();
         return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Long(getDateValue(parts,locale));
+              return getDateValue(parts,locale);
             }
             catch (Exception e)
             {
@@ -342,20 +343,20 @@ abstract class SingleColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Long(-getDateValue(parts,locale));
+            return Long.valueOf(-getDateValue(parts,locale));
           }
         };
       }
       else
       {
-        final Long defaultKey = new Long(-DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(defaultString).getTime());
+        final Long defaultKey = -DateFormat.getDateInstance(DateFormat.DEFAULT,locale).parse(defaultString).getTime();
         return new SingleColumnComparator(numberName,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Long(-getDateValue(parts,locale));
+              return Long.valueOf(-getDateValue(parts,locale));
             }
             catch (Exception e)
             {

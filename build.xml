@@ -4,8 +4,8 @@
     CSV-Sorter ANT build
   </description>
 
-  <property name="version.number" value="0.94 beta"/>
-  <property name="version.date" value="2014/07/14"/>
+  <property name="version.number" value="0.95 beta"/>
+  <property name="version.date" value="2018/01/11"/>
 
   <property name="root" location="."/>
   <property name="src" location="${root}/src"/>
@@ -88,8 +88,8 @@
            includes="${package}/**"
            deprecation="on"
            includeAntRuntime="false"
-           source="1.6"
-           target="1.6"
+           source="1.7"
+           target="1.7"
            >
      </javac>
   </target>

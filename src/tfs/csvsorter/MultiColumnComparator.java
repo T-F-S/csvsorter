@@ -69,7 +69,7 @@ abstract class MultiColumnComparator implements ColumnComparator
   }
 
 
-  int getIntegerValue(String[] parts) throws Exception
+  Integer getIntegerValue(String[] parts) throws Exception
   {
     int s = 0;
     for (NumberName nn : getNumberNames())
@@ -80,7 +80,7 @@ abstract class MultiColumnComparator implements ColumnComparator
   }
 
 
-  long getLongValue(String[] parts) throws Exception
+  Long getLongValue(String[] parts) throws Exception
   {
     long s = 0;
     for (NumberName nn : getNumberNames())
@@ -92,7 +92,7 @@ abstract class MultiColumnComparator implements ColumnComparator
 
 
 
-  double getDoubleValue(String[] parts) throws Exception
+  Double getDoubleValue(String[] parts) throws Exception
   {
     double s = 0;
     for (NumberName nn : getNumberNames())
@@ -116,7 +116,7 @@ abstract class MultiColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Integer(getIntegerValue(parts));
+            return getIntegerValue(parts);
           }
         };
       }
@@ -129,7 +129,7 @@ abstract class MultiColumnComparator implements ColumnComparator
           {
             try
             {
-              return new Integer(getIntegerValue(parts));
+              return getIntegerValue(parts);
             }
             catch (Exception e)
             {
@@ -147,20 +147,20 @@ abstract class MultiColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Integer(-getIntegerValue(parts));
+            return Integer.valueOf(-getIntegerValue(parts));
           }
         };
       }
       else
       {
-        final Integer defaultKey = new Integer(-Integer.parseInt(defaultString));
+        final Integer defaultKey = Integer.valueOf(-Integer.parseInt(defaultString));
         return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Integer(-getIntegerValue(parts));
+              return Integer.valueOf(-getIntegerValue(parts));
             }
             catch (Exception e)
             {
@@ -186,7 +186,7 @@ abstract class MultiColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Long(getLongValue(parts));
+            return getLongValue(parts);
           }
         };
       }
@@ -199,7 +199,7 @@ abstract class MultiColumnComparator implements ColumnComparator
           {
             try
             {
-              return new Long(getLongValue(parts));
+              return getLongValue(parts);
             }
             catch (Exception e)
             {
@@ -217,20 +217,20 @@ abstract class MultiColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Long(-getLongValue(parts));
+            return Long.valueOf(-getLongValue(parts));
           }
         };
       }
       else
       {
-        final Long defaultKey = new Long(-Long.parseLong(defaultString));
+        final Long defaultKey = Long.valueOf(-Long.parseLong(defaultString));
         return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Long(-getLongValue(parts));
+              return Long.valueOf(-getLongValue(parts));
             }
             catch (Exception e)
             {
@@ -256,7 +256,7 @@ abstract class MultiColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Double(getDoubleValue(parts));
+            return getDoubleValue(parts);
           }
         };
       }
@@ -269,7 +269,7 @@ abstract class MultiColumnComparator implements ColumnComparator
           {
             try
             {
-              return new Double(getDoubleValue(parts));
+              return getDoubleValue(parts);
             }
             catch (Exception e)
             {
@@ -287,20 +287,20 @@ abstract class MultiColumnComparator implements ColumnComparator
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
-            return new Double(-getDoubleValue(parts));
+            return Double.valueOf(-getDoubleValue(parts));
           }
         };
       }
       else
       {
-        final Double defaultKey = new Double(-Double.parseDouble(defaultString));
+        final Double defaultKey = Double.valueOf(-Double.parseDouble(defaultString));
         return new MultiColumnComparator(numberNames,ascending,type,defaultString)
         {
           public Comparable generateKey(String[] parts) throws Exception
           {
             try
             {
-              return new Double(-getDoubleValue(parts));
+              return Double.valueOf(-getDoubleValue(parts));
             }
             catch (Exception e)
             {
